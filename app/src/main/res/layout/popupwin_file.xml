@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/win_linearlayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:id="@+id/button_new_file"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_size"
+        android:layout_marginBottom="6dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/shape_sel"
+        android:cropToPadding="false"
+        android:paddingBottom="4dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="4dp"
+        android:paddingTop="4dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/new_file" />
+
+    <ImageButton
+        android:id="@+id/button_open_file"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
+        android:layout_marginBottom="6dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/shape_sel"
+        android:cropToPadding="false"
+        android:paddingBottom="5dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/open_file" />
+
+    <ImageButton
+        android:id="@+id/button_save"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
+        android:layout_marginBottom="6dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/shape_sel"
+        android:cropToPadding="false"
+        android:paddingBottom="5dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/save" />
+
+    <ImageButton
+        android:id="@+id/button_save_as"
+        android:layout_width="@dimen/button_size"
+        android:layout_height="@dimen/button_size"
+        android:layout_marginBottom="6dp"
+        android:background="@drawable/shape_sel"
+        android:paddingBottom="5dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/save_as" />
+
+    <ImageButton
+        android:id="@+id/button_back"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_size"
+        android:adjustViewBounds="false"
+        android:background="@drawable/shape_sel"
+        android:cropToPadding="false"
+        android:paddingBottom="5dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/arrow_back" />
+</LinearLayout>

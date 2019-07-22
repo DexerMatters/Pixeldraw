@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/button_shadow_pressed" />
+            <corners android:topLeftRadius="3dp"
+                android:topRightRadius="3dp"
+                android:bottomRightRadius="3dp"
+                android:bottomLeftRadius="3dp"/>
+        </shape>
+    </item>
+    <item android:top="1dp" android:start="1dp">
+        <shape>
+            <solid android:color="@color/button_pressed" />
+            <corners android:topLeftRadius="5dp"
+                android:topRightRadius="3dp"
+                android:bottomRightRadius="3dp"
+             android:bottomLeftRadius="3dp"/>
+        </shape>
+    </item>
+</layer-list>

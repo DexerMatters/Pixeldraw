@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pixeldraw</string>
+    <string name="about">版本:0.0.1 alpha 内测(6)\n工作室:Dream Block Resource Team\n作者:DexerMatters\n联系方式:2353708378@qq.com\nps:仅仅限于测试，有大量bug，不限于发布与转载</string>
+    <string name="copyright">Pixeldraw\nCopyright \u00a9 Dream Block Resource Team 2019–2020</string>
+</resources>
