@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="250dp"
     android:layout_height="250dp">
 
@@ -79,6 +79,19 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:layout_weight="7"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:orientation="vertical"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/brightness_plate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="10"
                 android:adjustViewBounds="false"
                 android:cropToPadding="false"
                 android:orientation="vertical"
