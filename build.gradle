@@ -6,7 +6,6 @@ buildscript {
         maven{ url "http://maven.aliyun.com/repository/central"}
         maven{ url "http://maven.aliyun.com/repository/jcenter"}
         maven{ url "http://maven.aliyun.com/repository"}
-
         google()
         //jcenter()
     }
@@ -21,8 +20,11 @@ buildscript {
 
 allprojects {
     repositories {
+        maven{ url "http://maven.aliyun.com/repository/central"}
+        maven{ url "http://maven.aliyun.com/repository/jcenter"}
+        maven{ url "http://maven.aliyun.com/repository"}
         google()
-        jcenter()
+        //jcenter()
     }
 }
 
