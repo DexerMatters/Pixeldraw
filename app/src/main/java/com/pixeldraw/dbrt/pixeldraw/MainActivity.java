@@ -1,9 +1,11 @@
 package com.pixeldraw.dbrt.pixeldraw;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.*;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.*;
@@ -14,11 +16,14 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.*;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public Color al_color = Color.valueOf(0);
     public int color_picked;
     public MainActivity instance;
-    public static String pathStr;
+    public static String pathStr = Environment.getExternalStorageDirectory().getPath() + "/paint.png";
     public static int pen_color = 0xFF000000;
     public static boolean enable_move = true;
     public PopupWindow mainWin, editWin, fileWin, colorWin, colorSelectorWin, returnWin;
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         View decorView = MainActivity.this.getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
+        onRead();
 
         onPixelClickListener = new PixelPicView.OnPixelTouchListener() {
             @Override
@@ -283,21 +289,14 @@ public class MainActivity extends AppCompatActivity {
                     button_save.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (pathStr != null) {
-                                saveImage();
-                                Snackbar.make(rootLayout, "保存成功", Snackbar.LENGTH_SHORT).show();
-                            } else {
-                                pathStr = Environment.getExternalStorageDirectory().getPath();
-                                startActivity(new Intent(MainActivity.this, FileSaveActivity.class));
-                            }
+                            saveImage();
+                            Snackbar.make(rootLayout, "保存成功", Snackbar.LENGTH_SHORT).show();
                         }
                     });
                     button_save_as.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            if (pathStr != null) {
-                                startActivity(new Intent(MainActivity.this, FileSaveActivity.class));
-                            } else pathStr = Environment.getExternalStorageDirectory().getPath();
+                            startActivity(new Intent(MainActivity.this, FileSaveActivity.class));
                         }
                     });
                     button_open_file.setOnClickListener(new View.OnClickListener() {
@@ -313,26 +312,92 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        View decorView = MainActivity.this.getWindow().getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    public void saveImage() {
+        getPermission();
         try {
-            pic.setInitBitmap(BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/PixelDraw/recent.png"));
-        } catch (NullPointerException e) {
+            File saveFile = new File(pathStr);
+            if (!saveFile.exists()){
+                Log.d(TAG, "saveImage: File does not exist, creating new one.");
+                saveFile.createNewFile();
+            } else {
+                Log.d(TAG, "saveImage: File exist.");
+            }
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(saveFile));
+            pic.getBitmap().compress(Bitmap.CompressFormat.PNG, 80, bufferedOutputStream);
+            bufferedOutputStream.flush();
+            bufferedOutputStream.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void onRead() {
+        getPermission();
+        if (new File(pathStr).exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(pathStr);
+            if (bitmap != null) {
+                pic.setInitBitmap(bitmap);
+                bitmap.recycle();
+            } else {
+                Snackbar.make(rootLayout, "打开失败", Snackbar.LENGTH_SHORT).show();
+                Log.d(TAG, "onRead: bitmap is null");
+            }
+        } else Snackbar.make(rootLayout, "文件不存在", Snackbar.LENGTH_SHORT).show();
+
+    }
+
+    public void getPermission(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+    }
+
+    public void showNewFileDialog() {
+        pathStr = null;
+        SettingDialog dialog = new SettingDialog(this, R.style.settingDialog_style);
+        dialog.setTitle("新建文件");
+        dialog.setContentView_(LayoutInflater.from(this).inflate(R.layout.dialog_new_file, null, true));
+        EditText lengthEdit = dialog.view.findViewById(R.id.length_edit);
+        EditText heightEdit = dialog.view.findViewById(R.id.height_edit);
+        lengthEdit.setHint("16");
+        heightEdit.setHint("16");
+        dialog.setEnableButtonOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (lengthEdit.getText().toString().length() != 0 && heightEdit.getText().toString().length() != 0) {
+                    Bitmap bitmap = Bitmap.createBitmap(Integer.parseInt(lengthEdit.getText().toString()), Integer.parseInt(heightEdit.getText().toString()), Bitmap.Config.ARGB_8888);
+                    pic.setInitBitmap(bitmap);
+                    dialog.dismiss();
+                } else Snackbar.make(rootLayout, "请输入尺寸", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+        dialog.show();
+    }
+
+
+    @Override
+    protected void onResume() {
+        onRead();
         super.onResume();
 
     }
 
     @Override
     protected void onStop() {
+        saveImage();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy: Destoryed");
+        mainWin.dismiss();
+        colorWin.dismiss();
+        colorSelectorWin.dismiss();
+        editWin.dismiss();
+        fileWin.dismiss();
+        returnWin.dismiss();
+        saveImage();
         super.onDestroy();
     }
 
@@ -398,18 +463,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return super.onTouchEvent(event);
-    }
-
-    public void onRead() {
-        Log.d(TAG, "onRead: " + MainActivity.pathStr);
-        Snackbar.make(rootLayout, "打开中", Snackbar.LENGTH_SHORT).show();
-        if (new File(MainActivity.pathStr).exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(MainActivity.pathStr);
-            if (bitmap != null)
-                pic.setInitBitmap(bitmap);
-            else Snackbar.make(rootLayout, "打开失败", Snackbar.LENGTH_SHORT).show();
-        } else Snackbar.make(rootLayout, "打开失败", Snackbar.LENGTH_SHORT).show();
-
     }
 
     private PopupWindow showMainPopWindow(int layout_id) {
@@ -601,41 +654,6 @@ public class MainActivity extends AppCompatActivity {
         // Draw view to canvas
         v.draw(c);
         return b;
-    }
-
-    public void saveImage() {
-        try {
-            File saveFile = new File(pathStr);
-            if (!saveFile.exists()) saveFile.createNewFile();
-            FileOutputStream outputStream = new FileOutputStream(saveFile);
-            pic.getBitmap().compress(Bitmap.CompressFormat.PNG, 80, outputStream);
-            outputStream.flush();
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void showNewFileDialog() {
-        pathStr = null;
-        SettingDialog dialog = new SettingDialog(this, R.style.settingDialog_style);
-        dialog.setTitle("新建文件");
-        dialog.setContentView_(LayoutInflater.from(this).inflate(R.layout.dialog_new_file, null, true));
-        EditText lengthEdit = dialog.view.findViewById(R.id.length_edit);
-        EditText heightEdit = dialog.view.findViewById(R.id.height_edit);
-        lengthEdit.setHint("16");
-        heightEdit.setHint("16");
-        dialog.setEnableButtonOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (lengthEdit.getText().toString().length() != 0 && heightEdit.getText().toString().length() != 0) {
-                    Bitmap bitmap = Bitmap.createBitmap(Integer.parseInt(lengthEdit.getText().toString()), Integer.parseInt(heightEdit.getText().toString()), Bitmap.Config.ARGB_8888);
-                    pic.setInitBitmap(bitmap);
-                    dialog.dismiss();
-                } else Snackbar.make(rootLayout, "请输入尺寸", Snackbar.LENGTH_SHORT).show();
-            }
-        });
-        dialog.show();
     }
 
     public View.OnClickListener getToolOnClickListener(ImageButton view, final int tool_id) {
