@@ -3,37 +3,30 @@ package com.pixeldraw.dbrt.pixeldraw;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.Shape;
 import android.os.Build;
-import android.telecom.CallScreeningService;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ColorListAdapter extends BaseAdapter {
     private ArrayList<Integer> color;
     private Context mContext;
 
-    public ColorListAdapter(Context mContext,ArrayList<Integer> color){
+    ColorListAdapter(Context mContext, ArrayList<Integer> color){
         this.color=color;
         this.mContext=mContext;
     }
 
-    public void addColor(int color){
+    void addColor(int color){
         int w=mContext.getResources().getDisplayMetrics().heightPixels/dip2px(30)-4;
         if(this.color.size()+1>w) this.color.remove(this.color.size()-1);
         this.color.add(0,color);

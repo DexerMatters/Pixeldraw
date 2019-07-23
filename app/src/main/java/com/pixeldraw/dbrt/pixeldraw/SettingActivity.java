@@ -1,30 +1,31 @@
 package com.pixeldraw.dbrt.pixeldraw;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.Objects;
+
 import static android.content.ContentValues.TAG;
 
-public class SettingActivity extends Activity {
+public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("设置");
+
         ListView l1=findViewById(R.id.setting_check);
         SettingListAdapter adapter = new SettingListAdapter(this,l1,R.layout.setting_check);
         l1.setAdapter(adapter);
@@ -58,11 +59,11 @@ public class SettingActivity extends Activity {
         dialog.setContentView_(LayoutInflater.from(this).inflate(R.layout.setting_progress,null,true));
         SeekBar seekBar=dialog.view.findViewById(R.id.setting_seekBar);
         TextView value=dialog.view.findViewById(R.id.value);
-        if(name=="控件缩放") {
+        if(Objects.equals(name, "控件缩放")) {
             seekBar.setProgress((int) (((float) AppGlobalData.DENSITY_DPI / (float) AppGlobalData.DEFAULT_DPI - 0.5) * 4));
             value.setText((int) ((AppGlobalData.DENSITY_DPI / (float) AppGlobalData.DEFAULT_DPI - 0.5) * 100) + "%");
         }
-        if(name=="文字大小"){
+        if(Objects.equals(name, "文字大小")){
             seekBar.setProgress((int)(((float) AppGlobalData.FONT_SIZE/(float) AppGlobalData.DEFAULT_FONT_SIZE-0.5)*4));
             value.setText((int)((AppGlobalData.FONT_SIZE/(float) AppGlobalData.DEFAULT_FONT_SIZE-0.5)*100)+"%");
         }
@@ -85,10 +86,10 @@ public class SettingActivity extends Activity {
         dialog.setEnableButtonOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (name == "控件缩放") {
+                if (Objects.equals(name, "控件缩放")) {
                     AppGlobalData.DENSITY_DPI = ((int) (((float) AppGlobalData.DEFAULT_DPI) * (((float) seekBar.getProgress()) / 4f + 0.5f)));
                 }
-                if(name=="文字大小"){
+                if(Objects.equals(name, "文字大小")){
                     AppGlobalData.FONT_SIZE=(AppGlobalData.DEFAULT_FONT_SIZE) * (((float) seekBar.getProgress()) / 4f + 0.5f);
                 }
                 AppGlobalData.updateData();

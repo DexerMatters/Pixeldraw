@@ -9,18 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/background_light"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/title"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="0dp"
             android:background="@color/colorPrimary"
-            android:padding="8dp"
-            android:text="设置"
-            android:textColor="@android:color/background_light"
-            android:textSize="@dimen/title_size" />
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -73,6 +73,7 @@
 
             </LinearLayout>
         </ScrollView>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
