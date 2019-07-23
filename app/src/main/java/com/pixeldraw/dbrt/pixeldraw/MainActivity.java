@@ -49,13 +49,14 @@ public class MainActivity extends AppCompatActivity {
     public static boolean enable_move = true;
     public PopupWindow mainWin, editWin, fileWin, colorWin, colorSelectorWin, returnWin;
     public PixelPicView pic;
+    CoordinatorLayout rootLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        CoordinatorLayout rootLayout = findViewById(R.id.coordinatorLayout);
+        rootLayout = findViewById(R.id.coordinatorLayout);
 
         AppGlobalData.MAIN_CONTEXT = MainActivity.this;
         AppGlobalData.MA_INSTANCE = MainActivity.this;
@@ -186,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                     mainWin.dismiss();
                     editWin = showMainPopWindow(R.layout.popupwin_edit);
                     colorWin = showSecPopWindow(R.layout.popupwin_color);
-                    returnWin = showReturnWindow(R.layout.popupwin_return);
+                    returnWin = showReturnWindow();
                     ImageButton return_button = returnWin.getContentView().findViewById(R.id.button_return);
                     return_button.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -287,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             if (pathStr != null) {
                                 saveImage();
-                                Toast.makeText(MainActivity.this, "保存成功", Toast.LENGTH_SHORT).show();
+                                Snackbar.make(rootLayout, "保存成功", Snackbar.LENGTH_SHORT).show();
                             } else {
                                 pathStr = Environment.getExternalStorageDirectory().getPath();
                                 startActivity(new Intent(MainActivity.this, FileSaveActivity.class));
@@ -354,9 +355,9 @@ public class MainActivity extends AppCompatActivity {
 
     float[] startX = new float[2];
     float[] startY = new float[2];
-    float[] orginal_pos = new float[2];
-    float[] orginal_size = new float[2];
-    float orginal_distance;
+    float[] original_pas = new float[2];
+    float[] original_size = new float[2];
+    float original_distance;
     boolean enable_web = false;
 
     @Override
@@ -367,22 +368,22 @@ public class MainActivity extends AppCompatActivity {
                 startY[0] = event.getY(0);
                 startX[1] = event.getX(1);
                 startY[1] = event.getY(1);
-                orginal_size[0] = pic.getScaleX();
-                orginal_size[1] = pic.getScaleY();
-                orginal_pos[0] = pic.getX();
-                orginal_pos[1] = pic.getY();
-                orginal_distance = getDistance(startX[0], startY[0], startX[1], startY[1]);
+                original_size[0] = pic.getScaleX();
+                original_size[1] = pic.getScaleY();
+                original_pas[0] = pic.getX();
+                original_pas[1] = pic.getY();
+                original_distance = getDistance(startX[0], startY[0], startX[1], startY[1]);
             }
 
             if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
-                float distence = getDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
+                float distance = getDistance(event.getX(0), event.getY(0), event.getX(1), event.getY(1));
                 float pixel_size = pic.getScaleX() * dip2px(300) / pic.getWidthPixels();
-                if (orginal_size[0] + (distence - orginal_distance) / 300 > 0) {
-                    pic.setScaleX(orginal_size[0] + (distence - orginal_distance) / 300);
-                    pic.setScaleY(orginal_size[1] + (distence - orginal_distance) / 300);
+                if (original_size[0] + (distance - original_distance) / 300 > 0) {
+                    pic.setScaleX(original_size[0] + (distance - original_distance) / 300);
+                    pic.setScaleY(original_size[1] + (distance - original_distance) / 300);
                 }
-                pic.setX(orginal_pos[0] + (event.getX(0) - startX[0] + event.getX(1) - startX[1]) / 2);
-                pic.setY(orginal_pos[1] + (event.getY(0) - startY[0] + event.getY(1) - startY[1]) / 2);
+                pic.setX(original_pas[0] + (event.getX(0) - startX[0] + event.getX(1) - startX[1]) / 2);
+                pic.setY(original_pas[1] + (event.getY(0) - startY[0] + event.getY(1) - startY[1]) / 2);
                 if (pixel_size >= 22) {
                     pic.enableWeb(true);
                 } else {
@@ -393,8 +394,8 @@ public class MainActivity extends AppCompatActivity {
             if (event.getActionMasked() == MotionEvent.ACTION_POINTER_UP) {
                 startX = new float[2];
                 startY = new float[2];
-                orginal_pos = new float[2];
-                orginal_size = new float[2];
+                original_pas = new float[2];
+                original_size = new float[2];
             }
         }
         return super.onTouchEvent(event);
@@ -402,14 +403,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onRead() {
         Log.d(TAG, "onRead: " + MainActivity.pathStr);
-        Toast.makeText(MainActivity.this, "打开中", Toast.LENGTH_SHORT).show();
+        Snackbar.make(rootLayout, "打开中", Snackbar.LENGTH_SHORT).show();
         if (new File(MainActivity.pathStr).exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(MainActivity.pathStr);
             if (bitmap != null)
                 pic.setInitBitmap(bitmap);
-            else Toast.makeText(MainActivity.this, "打开失败", Toast.LENGTH_SHORT).show();
-        } else
-            Toast.makeText(MainActivity.this, "打开失败", Toast.LENGTH_SHORT).show();
+            else Snackbar.make(rootLayout, "打开失败", Snackbar.LENGTH_SHORT).show();
+        } else Snackbar.make(rootLayout, "打开失败", Snackbar.LENGTH_SHORT).show();
 
     }
 
@@ -452,10 +452,10 @@ public class MainActivity extends AppCompatActivity {
         return popupWindow;
     }
 
-    private PopupWindow showReturnWindow(int layout_id) {
+    private PopupWindow showReturnWindow() {
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
         PopupWindow popupWindow = new PopupWindow(dip2px(200), dip2px(200));
-        View view = inflater.inflate(layout_id, null, true);
+        View view = inflater.inflate(R.layout.popupwin_return, null, true);
         popupWindow.setContentView(view);
         //popupWindow.setOutsideTouchable(false);
         popupWindow.setFocusable(false);
@@ -624,8 +624,8 @@ public class MainActivity extends AppCompatActivity {
         dialog.setContentView_(LayoutInflater.from(this).inflate(R.layout.dialog_new_file, null, true));
         EditText lengthEdit = dialog.view.findViewById(R.id.length_edit);
         EditText heightEdit = dialog.view.findViewById(R.id.height_edit);
-        lengthEdit.setText("16");
-        heightEdit.setText("16");
+        lengthEdit.setHint("16");
+        heightEdit.setHint("16");
         dialog.setEnableButtonOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -633,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap bitmap = Bitmap.createBitmap(Integer.parseInt(lengthEdit.getText().toString()), Integer.parseInt(heightEdit.getText().toString()), Bitmap.Config.ARGB_8888);
                     pic.setInitBitmap(bitmap);
                     dialog.dismiss();
-                } else Toast.makeText(MainActivity.this, "请输入尺寸", Toast.LENGTH_SHORT).show();
+                } else Snackbar.make(rootLayout, "请输入尺寸", Snackbar.LENGTH_SHORT).show();
             }
         });
         dialog.show();
