@@ -10,6 +10,7 @@
         android:id="@+id/button_return"
         android:layout_width="@dimen/button_size"
         android:layout_height="@dimen/button_size"
+        android:layout_marginTop="100dp"
         android:adjustViewBounds="false"
         android:background="@drawable/shape_sel"
         android:cropToPadding="false"

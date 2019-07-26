@@ -36,11 +36,12 @@ import static android.content.ContentValues.TAG;
 @TargetApi(Build.VERSION_CODES.O)
 public class MainActivity extends Activity {
     private boolean[] tools={false,false,false,false};
+    private boolean[] graph_tools={false,false,false,false};
     private FrameLayout screen;
     private TextView colorviewer;
     private Drawable scroll_background;
     private ListView button_colorlist;
-    private ImageButton button_pen,button_drawpen,button_bucket,button_colorpicker;
+    private ImageButton button_pen,button_drawpen,button_bucket,button_colorpicker,b_square,b_square_hol,b_circle,b_circle_hol;
     private PixelPicView.OnPixelTouchListener onPixelClickListener,onPixelTouchListener,onBucketUseListener,onColorPickerUseListener;
     private Bitmap bitmap;
     private float pixel_size_0;
@@ -52,8 +53,9 @@ public class MainActivity extends Activity {
     public static String pathStr;
     public static int pen_color=0xFF000000;
     public static boolean enable_move=true;
-    public PopupWindow mainWin,editWin,fileWin,colorWin,colorSelectorWin,returnWin;
+    public PopupWindow mainWin,editWin,fileWin,colorWin,colorSelectorWin,returnWin,graphWin;
     public PixelPicView pic;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +191,6 @@ public class MainActivity extends Activity {
                         mainWin.dismiss();
                         editWin = showMainPopWindow(R.layout.popupwin_edit);
                         colorWin = showSecPopWindow(R.layout.popupwin_color);
-
                         returnWin=showReturnWindow(R.layout.popupwin_return);
                         ImageButton return_button=returnWin.getContentView().findViewById(R.id.button_return);
                         return_button.setOnClickListener(new View.OnClickListener() {
@@ -210,6 +211,7 @@ public class MainActivity extends Activity {
                         ImageButton button_sel = colorView.findViewById(R.id.button_sel);
                         button_colorlist = colorView.findViewById(R.id.color_list);
                         ImageButton button_back = editView.findViewById(R.id.button_back);
+                        ImageButton button_graph=editView.findViewById(R.id.button_graph);
                         button_pen = editView.findViewById(R.id.button3);
                         button_drawpen = editView.findViewById(R.id.button1);
                         button_bucket = editView.findViewById(R.id.button);
@@ -257,6 +259,29 @@ public class MainActivity extends Activity {
                                 editWin.dismiss();
                                 colorWin.dismiss();
                                 returnWin.dismiss();
+                            }
+                        });
+                        button_graph.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                graphWin=showMainPopWindow(R.layout.popupwin_graph);
+                                View graphView=graphWin.getContentView();
+                                ImageButton b_back=graphView.findViewById(R.id.button_back);
+                                b_square=graphView.findViewById(R.id.button_square);
+                                b_square_hol=graphView.findViewById(R.id.button_square_hol);
+                                b_circle=graphView.findViewById(R.id.button_circle);
+                                b_circle_hol=graphView.findViewById(R.id.button_circle_hol);
+                                b_back.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        tools=new boolean[]{false,false,false,false};
+                                        pic.setOnPixelTouchListener(null);
+                                        pic.setOnPixelClickListener(null);
+                                        graphWin.dismiss();
+                                        editWin.showAtLocation(getWindow().getDecorView(), Gravity.TOP | Gravity.START, 20, 20);
+                                    }
+                                });
+                                editWin.dismiss();
                             }
                         });
                     }
@@ -667,6 +692,43 @@ public class MainActivity extends Activity {
                     view.setBackgroundResource(R.drawable.shape_button);
                     enable_move=true;
                     tools[tool_id]=false;
+                    return;
+                }
+            }
+        };
+    }
+    public View.OnClickListener getGraphToolOnClickListener(ImageButton view, final int tool_id){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pic.setOnPixelClickListener(null);
+                if(!tools[tool_id]) {
+                    b_square.setBackgroundResource(R.drawable.shape_button);
+                    b_square_hol.setBackgroundResource(R.drawable.shape_button);
+                    b_circle.setBackgroundResource(R.drawable.shape_button);
+                    b_circle_hol.setBackgroundResource(R.drawable.shape_button);
+                    view.setBackgroundResource(R.drawable.shape_button_selected);
+                    enable_move=false;
+                    switch (tool_id){
+                        case 0:
+                            pic.setOnPixelTouchListener(onPixelClickListener);
+                            break;
+                        case 1:
+                            pic.setOnPixelTouchListener(onPixelTouchListener);
+                            break;
+                        case 2:
+                            pic.setOnPixelTouchListener(onBucketUseListener);
+                            break;
+                        case 3:
+                            pic.setOnPixelTouchListener(onColorPickerUseListener);
+                            break;
+                    }
+                    graph_tools[tool_id]=true;
+                    return;
+                }else{
+                    view.setBackgroundResource(R.drawable.shape_button);
+                    enable_move=true;
+                    graph_tools[tool_id]=false;
                     return;
                 }
             }

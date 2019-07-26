@@ -1,12 +1,10 @@
 package com.pixeldraw.dbrt.pixeldraw;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-
 public class AboutActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
