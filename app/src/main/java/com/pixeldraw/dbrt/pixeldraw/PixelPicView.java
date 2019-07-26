@@ -180,6 +180,12 @@ public class PixelPicView extends View {
             set(i, i1, bitmap.getPixel(i, i1));
         }
     }
+    public void updateBitmap(Bitmap bitmap){
+        for (int i = 0; i < bitmap.getWidth(); i++)
+            for (int i1 = 0; i1 < bitmap.getHeight(); i1++) {
+                set(i, i1, bitmap.getPixel(i, i1));
+            }
+    }
     public void setOnPixelClickListener(final OnPixelClickListener pixelClickListener){
         if(pixelClickListener!=null) {
             setOnTouchListener(new OnTouchListener() {
