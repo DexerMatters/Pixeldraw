@@ -30,6 +30,7 @@ public class Listeners {
                             MA_INSTANCE.pic.setOnPixelTouchListener(SquareHolListener);
                             break;
                         case 3:
+                            MA_INSTANCE.pic.setOnPixelTouchListener(CircleListener);
                             break;
                         case 4:
                             break;
@@ -44,7 +45,6 @@ public class Listeners {
         };
     }
     public static PixelPicView.OnPixelTouchListener SquareListener=new PixelPicView.OnPixelTouchListener() {
-        private int point=0;
         private int x_0=0;
         private int y_0=0;
         private Bitmap last_bmp;
@@ -52,20 +52,21 @@ public class Listeners {
         @Override
         public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
             if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+                MA_INSTANCE.pic.loadHistoryBitmap();
                 last_bmp=MA_INSTANCE.pic.getBitmap();
                 x_0=x;
                 y_0=y;
-                point=1;
             }
             if(motionEvent.getAction()==MotionEvent.ACTION_MOVE) {
                 MA_INSTANCE.pic.updateBitmap(last_bmp);
-                for(int i=x_0;i<x+1;i++)
-                    for(int i1=y_0;i1<y+1;i1++){
-                        MA_INSTANCE.pic.set(i,i1,MainActivity.pen_color);
+                int s=x_0-x>0?1:-1;
+                int s_=y_0-y>0?1:-1;
+                for(int i=0;i<Math.abs(x_0-x)+1;i++)
+                    for(int i1=0;i1<Math.abs(y_0-y)+1;i1++){
+                        MA_INSTANCE.pic.set(x_0-s*i,y_0-s_*i1,MainActivity.pen_color);
                     }
             }
             if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
-                point=0;
                 x_0=0;
                 y_0=0;
                 last_bmp=null;
@@ -74,7 +75,6 @@ public class Listeners {
         }
     };
     public static PixelPicView.OnPixelTouchListener SquareHolListener=new PixelPicView.OnPixelTouchListener() {
-        private int point=0;
         private int x_0=0;
         private int y_0=0;
         private Bitmap last_bmp;
@@ -82,25 +82,52 @@ public class Listeners {
         @Override
         public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
             if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+                MA_INSTANCE.pic.loadHistoryBitmap();
                 last_bmp=MA_INSTANCE.pic.getBitmap();
                 x_0=x;
                 y_0=y;
-                point=1;
             }
             if(motionEvent.getAction()==MotionEvent.ACTION_MOVE) {
                 MA_INSTANCE.pic.updateBitmap(last_bmp);
-                for(int i=x_0;i<x;i++)
-                    MA_INSTANCE.pic.set(i,y_0,MainActivity.pen_color);
-                for(int i=x_0;i<x;i++)
-                    MA_INSTANCE.pic.set(i,y,MainActivity.pen_color);
-                for(int i=y_0;i<y;i++)
-                    MA_INSTANCE.pic.set(x_0,i,MainActivity.pen_color);
-                for(int i=y_0;i<y+1;i++)
-                    MA_INSTANCE.pic.set(x,i,MainActivity.pen_color);
+                int s=x_0-x>0?1:-1;
+                int s_=y_0-y>0?1:-1;
+                for(int i=0;i<Math.abs(x_0-x);i++) {
+                    MA_INSTANCE.pic.set(x_0 - i * s, y_0, MainActivity.pen_color);
+                    MA_INSTANCE.pic.set(x_0 - i * s, y, MainActivity.pen_color);
+                }
+                for(int i=0;i<Math.abs(y_0-y);i++)
+                    MA_INSTANCE.pic.set(x_0,y_0-i*s_,MainActivity.pen_color);
+                for(int i=0;i<Math.abs(y_0-y)+1;i++)
+                    MA_INSTANCE.pic.set(x,y_0-i*s_,MainActivity.pen_color);
 
             }
             if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
-                point=0;
+                x_0=0;
+                y_0=0;
+                last_bmp=null;
+            }
+            super.onTouch(view, motionEvent, x, y);
+        }
+    };
+    public static PixelPicView.OnPixelTouchListener CircleListener=new PixelPicView.OnPixelTouchListener() {
+        private int x_0=0;
+        private int y_0=0;
+        private Bitmap last_bmp;
+        @TargetApi(Build.VERSION_CODES.O)
+        @Override
+        public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
+            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+                MA_INSTANCE.pic.loadHistoryBitmap();
+                last_bmp=MA_INSTANCE.pic.getBitmap();
+                x_0=x;
+                y_0=y;
+            }
+            if(motionEvent.getAction()==MotionEvent.ACTION_MOVE) {
+                MA_INSTANCE.pic.updateBitmap(last_bmp);
+                int s=x_0-x>0?1:-1;
+                int s_=y_0-y>0?1:-1;
+            }
+            if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
                 x_0=0;
                 y_0=0;
                 last_bmp=null;

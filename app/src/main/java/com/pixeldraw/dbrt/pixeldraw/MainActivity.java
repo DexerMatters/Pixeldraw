@@ -74,8 +74,8 @@ public class MainActivity extends Activity {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+                    pic.loadHistoryBitmap();
                     pic.set(x, y, pen_color);
-                    AppGlobalData.Plates.add(pic.getBitmap());
                 }
                 super.onTouch(view, motionEvent, x, y);
             }
@@ -83,9 +83,12 @@ public class MainActivity extends Activity {
         onPixelTouchListener=new PixelPicView.OnPixelTouchListener() {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
-                pic.set(x,y,pen_color);
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP)
-                    AppGlobalData.Plates.add(pic.getBitmap());
+
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+                    pic.loadHistoryBitmap();
+                    pic.set(x,y,pen_color);
+                }else
+                    pic.set(x,y,pen_color);
                 super.onTouch(view, motionEvent, x, y);
             }
         };
@@ -106,6 +109,7 @@ public class MainActivity extends Activity {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
                 if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
+                    pic.loadHistoryBitmap();
                     orginal_color=pic.get(x,y);
                     new Thread(new Runnable() {
                         @Override
@@ -118,7 +122,6 @@ public class MainActivity extends Activity {
                             loop(x, y);
                         }
                     }).start();
-                    AppGlobalData.Plates.add(pic.getBitmap());
                 }
                 super.onTouch(view, motionEvent, x, y);
             }
@@ -197,10 +200,9 @@ public class MainActivity extends Activity {
                             @Override
                             public void onClick(View view) {
                                 if(AppGlobalData.Plates.size()!=0) {
-                                    pic.setInitBitmap(AppGlobalData.Plates.get(AppGlobalData.Plates.size() - 1));
+                                    pic.setInitBitmap(AppGlobalData.Plates.get(AppGlobalData.Plates.size()-1));
                                     pic.updateCanvas();
-                                    Log.d("save",""+AppGlobalData.Plates.size());
-                                    AppGlobalData.Plates.remove(AppGlobalData.Plates.size() - 1);
+                                    AppGlobalData.Plates.remove(AppGlobalData.Plates.size()-1);
                                 }
                             }
                         });

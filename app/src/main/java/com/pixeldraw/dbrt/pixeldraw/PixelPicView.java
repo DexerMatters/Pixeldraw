@@ -75,7 +75,6 @@ public class PixelPicView extends View {
     }
     @Override
     public void invalidate() {
-        //Plates.add(getBitmap());
         super.invalidate();
     }
 
@@ -144,6 +143,10 @@ public class PixelPicView extends View {
     public Bitmap[] getHistoryBitmap(){
         Bitmap[] bitmaps=new Bitmap[Plates.size()];
         return Plates.toArray(bitmaps);
+    }
+    public void loadHistoryBitmap(){
+        Plates.add(getBitmap());
+        Log.d(TAG, "loadHistoryBitmap() returned: ");
     }
     public Bitmap getBitmap(){
         Bitmap bitmap=Bitmap.createBitmap(widthPixels,heightPixels,Bitmap.Config.ARGB_8888);
