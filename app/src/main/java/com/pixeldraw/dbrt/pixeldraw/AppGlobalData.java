@@ -46,6 +46,7 @@ public abstract class AppGlobalData {
     private static File conf_file,bitmap_file;
     private static Drawable black;
     private static Drawable white;
+
     public static void initailizeData(){
         conf_file=new File(MAIN_CONTEXT.getFilesDir().getAbsolutePath()+"/config.cfg");
         bitmap_file=new File(MAIN_CONTEXT.getFilesDir().getAbsolutePath()+"/recent.png");

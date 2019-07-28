@@ -22,7 +22,7 @@ public class WarningDialog extends Dialog {
         super(context);
     }
 
-    public WarningDialog(@NonNull Context context, int themeResId) {
+    WarningDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
     }
 

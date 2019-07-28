@@ -75,6 +75,7 @@ public class PixelPicView extends View {
     }
     @Override
     public void invalidate() {
+        //Plates.add(getBitmap());
         super.invalidate();
     }
 
@@ -144,10 +145,6 @@ public class PixelPicView extends View {
         Bitmap[] bitmaps=new Bitmap[Plates.size()];
         return Plates.toArray(bitmaps);
     }
-    public void loadHistoryBitmap(){
-        Plates.add(getBitmap());
-        Log.d(TAG, "loadHistoryBitmap() returned: ");
-    }
     public Bitmap getBitmap(){
         Bitmap bitmap=Bitmap.createBitmap(widthPixels,heightPixels,Bitmap.Config.ARGB_8888);
         Log.d("bit",bitmap.getWidth()+","+widthPixels+","+Plate.length);
@@ -182,12 +179,6 @@ public class PixelPicView extends View {
             for (int i1 = 0; i1 < bitmap.getHeight(); i1++) {
             set(i, i1, bitmap.getPixel(i, i1));
         }
-    }
-    public void updateBitmap(Bitmap bitmap){
-        for (int i = 0; i < bitmap.getWidth(); i++)
-            for (int i1 = 0; i1 < bitmap.getHeight(); i1++) {
-                set(i, i1, bitmap.getPixel(i, i1));
-            }
     }
     public void setOnPixelClickListener(final OnPixelClickListener pixelClickListener){
         if(pixelClickListener!=null) {

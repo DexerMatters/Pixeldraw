@@ -35,16 +35,15 @@ import static android.content.ContentValues.TAG;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class MainActivity extends Activity {
-    public boolean[] tools={false,false,false,false};
-    public boolean[] graph_tools={false,false,false,false,false};
+    private boolean[] tools={false,false,false,false};
     private FrameLayout screen;
     private TextView colorviewer;
     private Drawable scroll_background;
     private ListView button_colorlist;
+    private ImageButton button_pen,button_drawpen,button_bucket,button_colorpicker;
     private PixelPicView.OnPixelTouchListener onPixelClickListener,onPixelTouchListener,onBucketUseListener,onColorPickerUseListener;
     private Bitmap bitmap;
     private float pixel_size_0;
-    public ImageButton button_pen,button_drawpen,button_bucket,button_colorpicker,b_line,b_square,b_square_hol,b_circle,b_circle_hol;
     public DisplayMetrics displayMetrics=new DisplayMetrics();
     public ColorListAdapter colorListAdapter=new ColorListAdapter(this,new ArrayList<Integer>());
     public Color al_color=Color.valueOf(00000000);
@@ -53,9 +52,8 @@ public class MainActivity extends Activity {
     public static String pathStr;
     public static int pen_color=0xFF000000;
     public static boolean enable_move=true;
-    public PopupWindow mainWin,editWin,fileWin,colorWin,colorSelectorWin,returnWin,graphWin;
+    public PopupWindow mainWin,editWin,fileWin,colorWin,colorSelectorWin,returnWin;
     public PixelPicView pic;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +72,8 @@ public class MainActivity extends Activity {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
-                    pic.loadHistoryBitmap();
                     pic.set(x, y, pen_color);
+                    AppGlobalData.Plates.add(pic.getBitmap());
                 }
                 super.onTouch(view, motionEvent, x, y);
             }
@@ -83,12 +81,9 @@ public class MainActivity extends Activity {
         onPixelTouchListener=new PixelPicView.OnPixelTouchListener() {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
-
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
-                    pic.loadHistoryBitmap();
-                    pic.set(x,y,pen_color);
-                }else
-                    pic.set(x,y,pen_color);
+                pic.set(x,y,pen_color);
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP)
+                    AppGlobalData.Plates.add(pic.getBitmap());
                 super.onTouch(view, motionEvent, x, y);
             }
         };
@@ -109,7 +104,6 @@ public class MainActivity extends Activity {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
                 if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
-                    pic.loadHistoryBitmap();
                     orginal_color=pic.get(x,y);
                     new Thread(new Runnable() {
                         @Override
@@ -122,6 +116,7 @@ public class MainActivity extends Activity {
                             loop(x, y);
                         }
                     }).start();
+                    AppGlobalData.Plates.add(pic.getBitmap());
                 }
                 super.onTouch(view, motionEvent, x, y);
             }
@@ -194,15 +189,17 @@ public class MainActivity extends Activity {
                         mainWin.dismiss();
                         editWin = showMainPopWindow(R.layout.popupwin_edit);
                         colorWin = showSecPopWindow(R.layout.popupwin_color);
+
                         returnWin=showReturnWindow(R.layout.popupwin_return);
                         ImageButton return_button=returnWin.getContentView().findViewById(R.id.button_return);
                         return_button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 if(AppGlobalData.Plates.size()!=0) {
-                                    pic.setInitBitmap(AppGlobalData.Plates.get(AppGlobalData.Plates.size()-1));
+                                    pic.setInitBitmap(AppGlobalData.Plates.get(AppGlobalData.Plates.size() - 1));
                                     pic.updateCanvas();
-                                    AppGlobalData.Plates.remove(AppGlobalData.Plates.size()-1);
+                                    Log.d("save",""+AppGlobalData.Plates.size());
+                                    AppGlobalData.Plates.remove(AppGlobalData.Plates.size() - 1);
                                 }
                             }
                         });
@@ -213,7 +210,6 @@ public class MainActivity extends Activity {
                         ImageButton button_sel = colorView.findViewById(R.id.button_sel);
                         button_colorlist = colorView.findViewById(R.id.color_list);
                         ImageButton button_back = editView.findViewById(R.id.button_back);
-                        ImageButton button_graph=editView.findViewById(R.id.button_graph);
                         button_pen = editView.findViewById(R.id.button3);
                         button_drawpen = editView.findViewById(R.id.button1);
                         button_bucket = editView.findViewById(R.id.button);
@@ -254,40 +250,13 @@ public class MainActivity extends Activity {
                             @Override
                             public void onClick(View view) {
                                 mainWin.showAtLocation(getWindow().getDecorView(), Gravity.TOP | Gravity.START, 20, 20);
-                                Listeners.resetListenersForTools();
+                                tools=new boolean[]{false,false,false,false};
+                                pic.setOnPixelTouchListener(null);
+                                pic.setOnPixelClickListener(null);
                                 enable_move=true;
                                 editWin.dismiss();
                                 colorWin.dismiss();
                                 returnWin.dismiss();
-                            }
-                        });
-                        button_graph.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                graphWin=showMainPopWindow(R.layout.popupwin_graph);
-                                View graphView=graphWin.getContentView();
-                                ImageButton b_back=graphView.findViewById(R.id.button_back);
-                                b_line=graphView.findViewById(R.id.button_line);
-                                b_square=graphView.findViewById(R.id.button_square);
-                                b_square_hol=graphView.findViewById(R.id.button_square_hol);
-                                b_circle=graphView.findViewById(R.id.button_circle);
-                                b_circle_hol=graphView.findViewById(R.id.button_circle_hol);
-                                b_line.setOnClickListener(Listeners.getGraphToolOnClickListener(b_line,0));
-                                b_square.setOnClickListener(Listeners.getGraphToolOnClickListener(b_square,1));
-                                b_square_hol.setOnClickListener(Listeners.getGraphToolOnClickListener(b_square_hol,2));
-                                b_circle.setOnClickListener(Listeners.getGraphToolOnClickListener(b_circle,3));
-                                b_circle_hol.setOnClickListener(Listeners.getGraphToolOnClickListener(b_circle_hol,4));
-                                Listeners.resetListenersForGraphTools();
-                                b_back.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        Listeners.resetListenersForGraphTools();
-                                        graphWin.dismiss();
-                                        editWin.showAtLocation(getWindow().getDecorView(), Gravity.TOP | Gravity.START, 20, 20);
-                                        Listeners.resetListenersForTools();
-                                    }
-                                });
-                                editWin.dismiss();
                             }
                         });
                     }
@@ -669,9 +638,13 @@ public class MainActivity extends Activity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                tools[tool_id]=!tools[tool_id];
+                pic.setOnPixelTouchListener(null);
+                pic.setOnPixelClickListener(null);
                 if(!tools[tool_id]) {
-                    Listeners.resetListenersForTools();
+                    button_pen.setBackgroundResource(R.drawable.shape_button);
+                    button_drawpen.setBackgroundResource(R.drawable.shape_button);
+                    button_bucket.setBackgroundResource(R.drawable.shape_button);
+                    button_colorpicker.setBackgroundResource(R.drawable.shape_button);
                     view.setBackgroundResource(R.drawable.shape_button_selected);
                     enable_move=false;
                     switch (tool_id){
@@ -688,16 +661,17 @@ public class MainActivity extends Activity {
                             pic.setOnPixelTouchListener(onColorPickerUseListener);
                             break;
                     }
+                    tools[tool_id]=true;
+                    return;
                 }else{
-                    view.setBackgroundResource(R.drawable.shape_sel);
-                    pic.setOnPixelTouchListener(null);
-                    pic.setOnPixelClickListener(null);
+                    view.setBackgroundResource(R.drawable.shape_button);
                     enable_move=true;
+                    tools[tool_id]=false;
+                    return;
                 }
             }
         };
     }
-
     public float getDistance(float p1_x,float p1_y,float p2_x,float p2_y){
         float x=Math.abs(p1_x-p2_x),y=Math.abs(p1_y-p2_y);
         return ((float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
