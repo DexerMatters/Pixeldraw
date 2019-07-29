@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorSpace;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -22,6 +23,7 @@ import android.view.*;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.MA_INSTANCE;
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.Plates;
@@ -52,7 +54,7 @@ public class PixelPicView extends View {
                 Plate[i][i1]= Color.TRANSPARENT;
         l= (FrameLayout.LayoutParams) getLayoutParams();
         l.width=MA_INSTANCE.dip2px(300);
-        l.height=MA_INSTANCE.dip2px(300)*(heightPixels/widthPixels);
+        l.height= ((int) (MA_INSTANCE.dip2px(300) * ((float) heightPixels / (float) widthPixels)));
         l.gravity=Gravity.CENTER;
         setX(MA_INSTANCE.displayMetrics.widthPixels/2-getMeasuredWidth()/2);
         setY(MA_INSTANCE.displayMetrics.heightPixels/2-getMeasuredHeight()/2);
@@ -96,6 +98,14 @@ public class PixelPicView extends View {
                     canvas.drawRect(this.getWidth() / Plate.length * i, this.getHeight() / Plate[0].length * i1, this.getWidth() / Plate.length * (i + 1), this.getHeight() / Plate[0].length * i1 - this.getWidth() / Plate.length / webWidth, mpaint2);
                 }
             }
+        Rect rect=canvas.getClipBounds();
+        rect.bottom--;
+        rect.right--;
+        Paint paint=new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(4);
+        canvas.drawRect(rect,paint);
         super.onDraw(canvas);
     }
     public void enableWeb(boolean b){
@@ -125,14 +135,13 @@ public class PixelPicView extends View {
     }
 
     public void set(int x, int y, int value){
-        /*if(Color.alpha(value)==1){
+        if(Plate[x][y]!=value)
             Plate[x][y]=value;
-        }else {
-            Color color_0 = Color.valueOf(value);
-            Color color_1 = Color.valueOf(Plate[x][y]);
-            Plate[x][y]=Color.argb(color_0.alpha()+color_1.alpha(),color_0.red()+color_1.red(),color_0.green()+color_1.green(),color_0.blue()+color_1.blue());
-        }*/
-        Plate[x][y]=value;
+        invalidate();
+    }
+    public void set(float x, float y, int value){
+        if(Plate[(int)x][(int)y]!=value)
+            Plate[(int)x][(int)y]=value;
         invalidate();
     }
     public int get(int x,int y){

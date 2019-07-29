@@ -22,6 +22,7 @@ public class Listeners {
                     MainActivity.enable_move=false;
                     switch (graph_id){
                         case 0:
+                            MA_INSTANCE.pic.setOnPixelTouchListener(LineListener);
                             break;
                         case 1:
                             MA_INSTANCE.pic.setOnPixelTouchListener(SquareListener);
@@ -40,10 +41,42 @@ public class Listeners {
                 }else{
                     MainActivity.enable_move =true;
                     v.setBackgroundResource(R.drawable.shape_sel);
+                    MA_INSTANCE.pic.setOnPixelTouchListener(null);
+                    MA_INSTANCE.pic.setOnPixelClickListener(null);
                 }
             }
         };
     }
+    public static PixelPicView.OnPixelTouchListener LineListener=new PixelPicView.OnPixelTouchListener() {
+        private int x_0=0;
+        private int y_0=0;
+        private Bitmap last_bmp;
+        @TargetApi(Build.VERSION_CODES.O)
+        @Override
+        public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
+            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+                MA_INSTANCE.pic.loadHistoryBitmap();
+                last_bmp=MA_INSTANCE.pic.getBitmap();
+                x_0=x;
+                y_0=y;
+            }
+            if(motionEvent.getAction()==MotionEvent.ACTION_MOVE) {
+                MA_INSTANCE.pic.updateBitmap(last_bmp);
+                int s=x_0-x>0?1:-1;
+                int s_=y_0-y>0?1:-1;
+                float length = (float) Math.sqrt(Math.pow(x_0 - x==0?1:x_0 - x, 2) + Math.pow(y_0 - y==0?1:y_0 - y, 2));
+                for (float th = 0; th <= length; th = th + 1f) {
+                    MA_INSTANCE.pic.set(x_0 + (x - x_0) * th / length, y_0 + (y - y_0) * th / length,MainActivity.pen_color);
+                }
+            }
+            if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
+                x_0=0;
+                y_0=0;
+                last_bmp=null;
+            }
+            super.onTouch(view, motionEvent, x, y);
+        }
+    };
     public static PixelPicView.OnPixelTouchListener SquareListener=new PixelPicView.OnPixelTouchListener() {
         private int x_0=0;
         private int y_0=0;
