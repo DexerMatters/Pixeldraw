@@ -15,6 +15,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
@@ -49,7 +50,7 @@ public class PixelPicView extends View {
         for (int i = 0; i < Plate.length; i++)
             for (int i1 = 0; i1 < Plate[i].length; i1++)
                 Plate[i][i1]= Color.TRANSPARENT;
-        l=(FrameLayout.LayoutParams) getLayoutParams();
+        l= (FrameLayout.LayoutParams) getLayoutParams();
         l.width=MA_INSTANCE.dip2px(300);
         l.height=MA_INSTANCE.dip2px(300)*(heightPixels/widthPixels);
         l.gravity=Gravity.CENTER;

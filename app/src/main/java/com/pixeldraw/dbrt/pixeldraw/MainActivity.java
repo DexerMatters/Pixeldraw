@@ -83,12 +83,9 @@ public class MainActivity extends Activity {
         onPixelTouchListener=new PixelPicView.OnPixelTouchListener() {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
-
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
+                pic.set(x,y,pen_color);
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN)
                     pic.loadHistoryBitmap();
-                    pic.set(x,y,pen_color);
-                }else
-                    pic.set(x,y,pen_color);
                 super.onTouch(view, motionEvent, x, y);
             }
         };
