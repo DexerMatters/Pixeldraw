@@ -22,7 +22,6 @@ public class Listeners {
                     MainActivity.enable_move=false;
                     switch (graph_id){
                         case 0:
-                            MA_INSTANCE.pic.setOnPixelTouchListener(LineListener);
                             break;
                         case 1:
                             MA_INSTANCE.pic.setOnPixelTouchListener(SquareListener);
@@ -42,12 +41,11 @@ public class Listeners {
                 }else{
                     MainActivity.enable_move =true;
                     v.setBackgroundResource(R.drawable.shape_sel);
-                    MA_INSTANCE.pic.setOnPixelTouchListener(null);
-                    MA_INSTANCE.pic.setOnPixelClickListener(null);
                 }
             }
         };
     }
+<<<<<<< HEAD
     public static PixelPicView.OnPixelTouchListener LineListener=new PixelPicView.OnPixelTouchListener() {
         private int x_0=0;
         private int y_0=0;
@@ -78,6 +76,8 @@ public class Listeners {
             super.onTouch(view, motionEvent, x, y);
         }
     };
+=======
+>>>>>>> parent of a8db2bf... Drawing lines added.Borders added.Fix bugs of opening pic
     public static PixelPicView.OnPixelTouchListener SquareListener=new PixelPicView.OnPixelTouchListener() {
         private int x_0=0;
         private int y_0=0;
