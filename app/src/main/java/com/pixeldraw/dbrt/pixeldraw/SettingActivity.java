@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import static android.content.ContentValues.TAG;
 
 public class SettingActivity extends Activity {
@@ -25,14 +27,14 @@ public class SettingActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        ListView l1=findViewById(R.id.setting_check);
+        ListView l1=(ListView) findViewById(R.id.setting_check);
         SettingListAdapter adapter = new SettingListAdapter(this,l1,R.layout.setting_check);
         l1.setAdapter(adapter);
         l1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(i==0||i==1) {
-                    TextView name = view.findViewById(R.id.name);
+                    TextView name = (TextView) view.findViewById(R.id.name);
                     showProgressDialog(name.getText().toString());
                 }
             }
@@ -56,8 +58,8 @@ public class SettingActivity extends Activity {
         SettingDialog dialog=new SettingDialog(this,R.style.settingDialog_style);
         dialog.setTitle(name);
         dialog.setContentView_(LayoutInflater.from(this).inflate(R.layout.setting_progress,null,true));
-        SeekBar seekBar=dialog.view.findViewById(R.id.setting_seekBar);
-        TextView value=dialog.view.findViewById(R.id.value);
+        SeekBar seekBar=(SeekBar) dialog.view.findViewById(R.id.setting_seekBar);
+        TextView value=(TextView) dialog.view.findViewById(R.id.value);
         if(name=="控件缩放") {
             seekBar.setProgress((int) (((float) AppGlobalData.DENSITY_DPI / (float) AppGlobalData.DEFAULT_DPI - 0.5) * 4));
             value.setText((int) ((AppGlobalData.DENSITY_DPI / (float) AppGlobalData.DEFAULT_DPI - 0.5) * 100) + "%");

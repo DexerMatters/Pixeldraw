@@ -3,7 +3,6 @@ package com.pixeldraw.dbrt.pixeldraw;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.*;
-import android.arch.core.util.Function;
 import android.content.*;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -14,7 +13,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.*;
-import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
@@ -33,7 +31,6 @@ import java.util.Date;
 import static android.content.ContentValues.TAG;
 
 
-@TargetApi(Build.VERSION_CODES.O)
 public class MainActivity extends Activity {
     public boolean[] tools={false,false,false,false};
     public boolean[] graph_tools={false,false,false,false,false};
@@ -47,7 +44,7 @@ public class MainActivity extends Activity {
     public ImageButton button_pen,button_drawpen,button_bucket,button_colorpicker,b_line,b_square,b_square_hol,b_circle,b_circle_hol;
     public DisplayMetrics displayMetrics=new DisplayMetrics();
     public ColorListAdapter colorListAdapter=new ColorListAdapter(this,new ArrayList<Integer>());
-    public Color al_color=Color.valueOf(00000000);
+    public int al_color=0;
     public int color_picked;
     public static MainActivity instance;
     public static String pathStr;
@@ -68,8 +65,8 @@ public class MainActivity extends Activity {
         AppGlobalData.initailizeData();
         AppGlobalData.initColorfulBar();
 
-        pic=findViewById(R.id.pic);
-        screen=findViewById(R.id.frameLayout);
+        pic=(PixelPicView) findViewById(R.id.pic);
+        screen=(FrameLayout) findViewById(R.id.frameLayout);
         onPixelClickListener=new PixelPicView.OnPixelTouchListener() {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
@@ -174,9 +171,9 @@ public class MainActivity extends Activity {
 
                 mainWin = showMainPopWindow(R.layout.popupwin);
                 final View mainView = mainWin.getContentView();
-                ImageButton button_A = mainView.findViewById(R.id.button2);
-                ImageButton button_B = mainView.findViewById(R.id.button3);
-                ImageButton button_settings=mainView.findViewById(R.id.button4);
+                ImageButton button_A = (ImageButton)mainView.findViewById(R.id.button2);
+                ImageButton button_B = (ImageButton)mainView.findViewById(R.id.button3);
+                ImageButton button_settings=(ImageButton)mainView.findViewById(R.id.button4);
                 button_settings.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
@@ -192,7 +189,7 @@ public class MainActivity extends Activity {
                         editWin = showMainPopWindow(R.layout.popupwin_edit);
                         colorWin = showSecPopWindow(R.layout.popupwin_color);
                         returnWin=showReturnWindow(R.layout.popupwin_return);
-                        ImageButton return_button=returnWin.getContentView().findViewById(R.id.button_return);
+                        ImageButton return_button=(ImageButton)returnWin.getContentView().findViewById(R.id.button_return);
                         return_button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -207,14 +204,14 @@ public class MainActivity extends Activity {
                         View editView = editWin.getContentView();
                         View colorView = colorWin.getContentView();
 
-                        ImageButton button_sel = colorView.findViewById(R.id.button_sel);
-                        button_colorlist = colorView.findViewById(R.id.color_list);
-                        ImageButton button_back = editView.findViewById(R.id.button_back);
-                        ImageButton button_graph=editView.findViewById(R.id.button_graph);
-                        button_pen = editView.findViewById(R.id.button3);
-                        button_drawpen = editView.findViewById(R.id.button1);
-                        button_bucket = editView.findViewById(R.id.button);
-                        button_colorpicker = editView.findViewById(R.id.button2);
+                        ImageButton button_sel = (ImageButton)colorView.findViewById(R.id.button_sel);
+                        button_colorlist = (ListView) colorView.findViewById(R.id.color_list);
+                        ImageButton button_back = (ImageButton)editView.findViewById(R.id.button_back);
+                        ImageButton button_graph= (ImageButton) editView.findViewById(R.id.button_graph);
+                        button_pen = (ImageButton)editView.findViewById(R.id.button3);
+                        button_drawpen = (ImageButton)editView.findViewById(R.id.button1);
+                        button_bucket = (ImageButton)editView.findViewById(R.id.button);
+                        button_colorpicker = (ImageButton)editView.findViewById(R.id.button2);
                         button_pen.setOnClickListener(getToolOnClickListener(button_pen, 0));
                         button_drawpen.setOnClickListener(getToolOnClickListener(button_drawpen, 1));
                         button_bucket.setOnClickListener(getToolOnClickListener(button_bucket,2));
@@ -225,8 +222,8 @@ public class MainActivity extends Activity {
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 if (i != 0) {
                                     al_color = colorListAdapter.getColor(i);
-                                    pen_color = al_color.toArgb();
-                                    colorListAdapter.addColor(al_color.toArgb());
+                                    pen_color = al_color;
+                                    colorListAdapter.addColor(al_color);
                                     button_colorlist.setAdapter(colorListAdapter);
                                 }
                             }
@@ -263,12 +260,12 @@ public class MainActivity extends Activity {
                             public void onClick(View view) {
                                 graphWin=showMainPopWindow(R.layout.popupwin_graph);
                                 View graphView=graphWin.getContentView();
-                                ImageButton b_back=graphView.findViewById(R.id.button_back);
-                                b_line=graphView.findViewById(R.id.button_line);
-                                b_square=graphView.findViewById(R.id.button_square);
-                                b_square_hol=graphView.findViewById(R.id.button_square_hol);
-                                b_circle=graphView.findViewById(R.id.button_circle);
-                                b_circle_hol=graphView.findViewById(R.id.button_circle_hol);
+                                ImageButton b_back=(ImageButton) graphView.findViewById(R.id.button_back);
+                                b_line=(ImageButton)graphView.findViewById(R.id.button_line);
+                                b_square=(ImageButton)graphView.findViewById(R.id.button_square);
+                                b_square_hol=(ImageButton)graphView.findViewById(R.id.button_square_hol);
+                                b_circle=(ImageButton)graphView.findViewById(R.id.button_circle);
+                                b_circle_hol=(ImageButton)graphView.findViewById(R.id.button_circle_hol);
                                 b_line.setOnClickListener(Listeners.getGraphToolOnClickListener(b_line,0));
                                 b_square.setOnClickListener(Listeners.getGraphToolOnClickListener(b_square,1));
                                 b_square_hol.setOnClickListener(Listeners.getGraphToolOnClickListener(b_square_hol,2));
@@ -295,11 +292,11 @@ public class MainActivity extends Activity {
 
                         fileWin=showMainPopWindow(R.layout.popupwin_file);
                         View con=fileWin.getContentView();
-                        ImageButton button_back=con.findViewById(R.id.button_back),
-                                button_open_file=con.findViewById(R.id.button_open_file),
-                                button_save=con.findViewById(R.id.button_save),
-                                button_save_as=con.findViewById(R.id.button_save_as),
-                                button_new_file=con.findViewById(R.id.button_new_file);
+                        ImageButton button_back=(ImageButton) con.findViewById(R.id.button_back),
+                                button_open_file=(ImageButton)con.findViewById(R.id.button_open_file),
+                                button_save=(ImageButton)con.findViewById(R.id.button_save),
+                                button_save_as=(ImageButton)con.findViewById(R.id.button_save_as),
+                                button_new_file=(ImageButton)con.findViewById(R.id.button_new_file);
                         button_back.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -415,7 +412,7 @@ public class MainActivity extends Activity {
                 }
                 pic.setX(orginal_pos[0] + (event.getX(0) - startX[0] + event.getX(1) - startX[1]) / 2);
                 pic.setY(orginal_pos[1] + (event.getY(0) - startY[0] + event.getY(1) - startY[1]) / 2);
-                if(pixel_size>=22){
+                if(pixel_size>=25){
                     pic.enableWeb(true);
                 }else{
                     pic.enableWeb(false);
@@ -503,14 +500,14 @@ public class MainActivity extends Activity {
     public PopupWindow showColorSelectorWin(Context ctx,View.OnClickListener listener){
         PopupWindow colorSelectorWin=showSimplePopWindow(ctx,R.layout.popupwin_colorselector);
         View ctt=colorSelectorWin.getContentView();
-        ImageView color_adjust=ctt.findViewById(R.id.color_plane);
-        ImageView color_opacity=ctt.findViewById(R.id.alpha_plate);
-        ImageView color_select=ctt.findViewById(R.id.lightness_plane);
-        ImageView color_brightness=ctt.findViewById(R.id.brightness_plate);
-        Button button_pick=ctt.findViewById(R.id.button_yes);
-        Button button_cancel=ctt.findViewById(R.id.button_no);
-        colorviewer=ctt.findViewById(R.id.colorviewer);
-        int color_before=colorListAdapter.getColor(0).toArgb();
+        ImageView color_adjust=(ImageView)ctt.findViewById(R.id.color_plane);
+        ImageView color_opacity=(ImageView)ctt.findViewById(R.id.alpha_plate);
+        ImageView color_select=(ImageView)ctt.findViewById(R.id.lightness_plane);
+        ImageView color_brightness=(ImageView)ctt.findViewById(R.id.brightness_plate);
+        Button button_pick=(Button)ctt.findViewById(R.id.button_yes);
+        Button button_cancel=(Button)ctt.findViewById(R.id.button_no);
+        colorviewer=(TextView) ctt.findViewById(R.id.colorviewer);
+        int color_before=colorListAdapter.getColor(0);
         AppGlobalData.makeAlphaPlane(color_before);
         AppGlobalData.makeBrightnessPlane(color_before);
         color_brightness.setBackground(new BitmapDrawable(AppGlobalData.brightness_plane));
@@ -647,8 +644,8 @@ public class MainActivity extends Activity {
         SettingDialog dialog=new SettingDialog(this,R.style.settingDialog_style);
         dialog.setTitle("新建文件");
         dialog.setContentView_(LayoutInflater.from(this).inflate(R.layout.dialog_new_file,null,true));
-        EditText lengthEdit=dialog.view.findViewById(R.id.length_edit);
-        EditText heightEdit=dialog.view.findViewById(R.id.height_edit);
+        EditText lengthEdit=(EditText) dialog.view.findViewById(R.id.length_edit);
+        EditText heightEdit=(EditText) dialog.view.findViewById(R.id.height_edit);
         lengthEdit.setText("16");heightEdit.setText("16");
         dialog.setEnableButtonOnClickListener(new View.OnClickListener() {
             @Override

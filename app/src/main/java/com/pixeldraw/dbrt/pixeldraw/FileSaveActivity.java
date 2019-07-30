@@ -33,17 +33,17 @@ public class FileSaveActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_save);
-        EditText editText=findViewById(R.id.editText);
-        editText.setText(new File(MainActivity.pathStr).getName());
-        Button button=findViewById(R.id.button_backtofore);
-        final ListView listView=findViewById(R.id.list);
-        final TextView path=findViewById(R.id.path);
+        EditText editText=(EditText) findViewById(R.id.editText);
+        editText.setText(new File(MainActivity.pathStr).isDirectory()?"Unnamed.png":new File(MainActivity.pathStr).getName());
+        Button button=(Button)findViewById(R.id.button_backtofore);
+        final ListView listView=(ListView) findViewById(R.id.list);
+        final TextView path=(TextView) findViewById(R.id.path);
         path.setText(Environment.getExternalStorageDirectory().getAbsolutePath());
         listView.setAdapter(getAdapterOfFiles(Environment.getExternalStorageDirectory().getAbsolutePath()));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView name=view.findViewById(R.id.name);
+                TextView name=(TextView) view.findViewById(R.id.name);
                     pathStr+="/"+name.getText();
                     path.setText(pathStr);
                     listView.setAdapter(getAdapterOfFiles(pathStr));
@@ -59,7 +59,7 @@ public class FileSaveActivity extends Activity {
                 }
             }
         });
-        Button button_checkSave=findViewById(R.id.button_checksave);
+        Button button_checkSave=(Button) findViewById(R.id.button_checksave);
         button_checkSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

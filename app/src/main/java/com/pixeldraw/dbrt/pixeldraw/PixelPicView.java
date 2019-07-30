@@ -6,17 +6,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
-import android.graphics.ColorSpace;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
@@ -29,7 +24,7 @@ import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.MA_INSTANCE;
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.Plates;
 
 import static android.content.ContentValues.TAG;
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class PixelPicView extends View {
     private Canvas canvas=new Canvas();
     private int widthPixels=16,heightPixels=16,webWidth=18;
@@ -83,28 +78,29 @@ public class PixelPicView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Paint mpaint2 = new Paint();
+        mpaint2.setAntiAlias(false);
+        mpaint2.setColor(Color.WHITE);
         for (int i = 0; i < Plate.length; i++)
             for (int i1 = 0; i1 < Plate[i].length; i1++) {
                 Paint mpaint = new Paint();
                 mpaint.setAntiAlias(false);
                 mpaint.setColor(Plate[i][i1]);
 
-                Paint mpaint2 = new Paint();
-                mpaint2.setAntiAlias(false);
-                mpaint2.setColor(Color.WHITE);
                 canvas.drawRect(this.getWidth() / Plate.length * i, this.getHeight() / Plate[0].length * i1, this.getWidth() / Plate.length * (i + 1), this.getHeight() / Plate[0].length * (i1 + 1), mpaint);
-                if(isWeb) {
-                    canvas.drawRect(this.getWidth() / Plate.length * i, this.getHeight() / Plate[0].length * i1, this.getWidth() / Plate.length * i - this.getWidth() / Plate.length / webWidth, this.getHeight() / Plate[0].length * (i1 + 1), mpaint2);
-                    canvas.drawRect(this.getWidth() / Plate.length * i, this.getHeight() / Plate[0].length * i1, this.getWidth() / Plate.length * (i + 1), this.getHeight() / Plate[0].length * i1 - this.getWidth() / Plate.length / webWidth, mpaint2);
-                }
             }
+        if(isWeb) {
+            for (int i = 1; i < Plate.length; i++)
+                canvas.drawRect(this.getWidth() / Plate.length * i, 0f, this.getWidth() / Plate.length * i + (getWidth() / getWidthPixels() * 0.05f), this.getHeight(), mpaint2);
+            for (int i = 1; i < Plate[0].length; i++)
+                canvas.drawRect(0f,this.getHeight() / Plate[0].length * i - (getHeight() / getHeightPixels() * 0.05f),getWidth(),this.getHeight() / Plate[0].length * i, mpaint2);
+
+        }
         Rect rect=canvas.getClipBounds();
-        rect.bottom--;
-        rect.right--;
         Paint paint=new Paint();
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(4);
+        paint.setStrokeWidth(4f);
         canvas.drawRect(rect,paint);
         super.onDraw(canvas);
     }
@@ -135,13 +131,15 @@ public class PixelPicView extends View {
     }
 
     public void set(int x, int y, int value){
-        if(Plate[x][y]!=value)
-            Plate[x][y]=value;
+        if(x>=0&&x<widthPixels&&y>=0&&y<heightPixels)
+            if(Plate[x][y]!=value)
+                Plate[x][y]=value;
         invalidate();
     }
     public void set(float x, float y, int value){
-        if(Plate[(int)x][(int)y]!=value)
-            Plate[(int)x][(int)y]=value;
+        if(x>=0&&x<widthPixels&&y>=0&&y<heightPixels)
+            if(Plate[(int)x][(int)y]!=value)
+                Plate[(int)x][(int)y]=value;
         invalidate();
     }
     public int get(int x,int y){
@@ -206,7 +204,7 @@ public class PixelPicView extends View {
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     PixelPicView instance = PixelPicView.this;
                     motionEvent.recycle();
-                    if (motionEvent.getAction() == MotionEvent.ACTION_BUTTON_PRESS) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                         for (int i = 0; i < Plate.length; i++)
                             for (int i1 = 0; i1 < Plate[i].length; i1++) {
                                 if (motionEvent.getX() > i * (getMeasuredWidth()/getWidthPixels())

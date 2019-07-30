@@ -8,10 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ScaleDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.Shape;
-import android.os.Build;
-import android.telecom.CallScreeningService;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +34,8 @@ public class ColorListAdapter extends BaseAdapter {
         if(this.color.size()+1>w) this.color.remove(this.color.size()-1);
         this.color.add(0,color);
     }
-    @TargetApi(Build.VERSION_CODES.O)
-    public Color getColor(int index){
-        return Color.valueOf(color.get(index));
+    public int getColor(int index){
+        return color.get(index);
     }
     @Override
     public int getCount() {
