@@ -7,7 +7,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+<<<<<<< HEAD
 import android.graphics.Rect;
+=======
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+>>>>>>> parent of a8db2bf... Drawing lines added.Borders added.Fix bugs of opening pic
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
@@ -18,7 +23,6 @@ import android.view.*;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.MA_INSTANCE;
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.Plates;
@@ -49,7 +53,7 @@ public class PixelPicView extends View {
                 Plate[i][i1]= Color.TRANSPARENT;
         l= (FrameLayout.LayoutParams) getLayoutParams();
         l.width=MA_INSTANCE.dip2px(300);
-        l.height= ((int) (MA_INSTANCE.dip2px(300) * ((float) heightPixels / (float) widthPixels)));
+        l.height=MA_INSTANCE.dip2px(300)*(heightPixels/widthPixels);
         l.gravity=Gravity.CENTER;
         setX(MA_INSTANCE.displayMetrics.widthPixels/2-getMeasuredWidth()/2);
         setY(MA_INSTANCE.displayMetrics.heightPixels/2-getMeasuredHeight()/2);
@@ -89,6 +93,7 @@ public class PixelPicView extends View {
 
                 canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, this.getMeasuredHeight() / Plate[0].length * i1, this.getMeasuredWidth() / Plate.length * (i + 1), this.getMeasuredHeight() / Plate[0].length * (i1 + 1), mpaint);
             }
+<<<<<<< HEAD
         if(isWeb) {
             for (int i = 1; i < Plate.length; i++)
                 canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, 0f, this.getMeasuredWidth() / Plate.length * i + (getMeasuredWidth() / getWidthPixels() * 0.05f), this.getMeasuredHeight(), mpaint2);
@@ -102,6 +107,8 @@ public class PixelPicView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4f);
         canvas.drawRect(rect,paint);
+=======
+>>>>>>> parent of a8db2bf... Drawing lines added.Borders added.Fix bugs of opening pic
         super.onDraw(canvas);
     }
     public void enableWeb(boolean b){
@@ -131,6 +138,7 @@ public class PixelPicView extends View {
     }
 
     public void set(int x, int y, int value){
+<<<<<<< HEAD
         if(x>=0&&x<widthPixels&&y>=0&&y<heightPixels)
             if(Plate[x][y]!=value)
                 Plate[x][y]=value;
@@ -140,6 +148,16 @@ public class PixelPicView extends View {
         if(x>=0&&x<widthPixels&&y>=0&&y<heightPixels)
             if(Plate[(int)x][(int)y]!=value)
                 Plate[(int)x][(int)y]=value;
+=======
+        /*if(Color.alpha(value)==1){
+            Plate[x][y]=value;
+        }else {
+            Color color_0 = Color.valueOf(value);
+            Color color_1 = Color.valueOf(Plate[x][y]);
+            Plate[x][y]=Color.argb(color_0.alpha()+color_1.alpha(),color_0.red()+color_1.red(),color_0.green()+color_1.green(),color_0.blue()+color_1.blue());
+        }*/
+        Plate[x][y]=value;
+>>>>>>> parent of a8db2bf... Drawing lines added.Borders added.Fix bugs of opening pic
         invalidate();
     }
     public int get(int x,int y){
