@@ -30,7 +30,6 @@ import java.util.Date;
 
 import static android.content.ContentValues.TAG;
 
-
 public class MainActivity extends Activity {
     public boolean[] tools={false,false,false,false};
     public boolean[] graph_tools={false,false,false,false,false};

@@ -87,13 +87,13 @@ public class PixelPicView extends View {
                 mpaint.setAntiAlias(false);
                 mpaint.setColor(Plate[i][i1]);
 
-                canvas.drawRect(this.getWidth() / Plate.length * i, this.getHeight() / Plate[0].length * i1, this.getWidth() / Plate.length * (i + 1), this.getHeight() / Plate[0].length * (i1 + 1), mpaint);
+                canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, this.getMeasuredHeight() / Plate[0].length * i1, this.getMeasuredWidth() / Plate.length * (i + 1), this.getMeasuredHeight() / Plate[0].length * (i1 + 1), mpaint);
             }
         if(isWeb) {
             for (int i = 1; i < Plate.length; i++)
-                canvas.drawRect(this.getWidth() / Plate.length * i, 0f, this.getWidth() / Plate.length * i + (getWidth() / getWidthPixels() * 0.05f), this.getHeight(), mpaint2);
+                canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, 0f, this.getMeasuredWidth() / Plate.length * i + (getMeasuredWidth() / getWidthPixels() * 0.05f), this.getMeasuredHeight(), mpaint2);
             for (int i = 1; i < Plate[0].length; i++)
-                canvas.drawRect(0f,this.getHeight() / Plate[0].length * i - (getHeight() / getHeightPixels() * 0.05f),getWidth(),this.getHeight() / Plate[0].length * i, mpaint2);
+                canvas.drawRect(0f,this.getMeasuredHeight() / Plate[0].length * i - (getMeasuredHeight() / getHeightPixels() * 0.05f),getMeasuredWidth(),this.getMeasuredHeight() / Plate[0].length * i, mpaint2);
 
         }
         Rect rect=canvas.getClipBounds();
@@ -243,5 +243,4 @@ public class PixelPicView extends View {
     private static float dip2px(float dp){
         return MA_INSTANCE.dip2px(dp);
     }
-
 }
