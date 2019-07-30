@@ -61,7 +61,7 @@ public class WarningDialog extends Dialog {
     @Override
     public void show() {
         View content=LayoutInflater.from(getContext()).inflate(R.layout.dialog_enable,null,true);
-        enable_button=(Button)content.findViewById(R.id.enable);
+        enable_button=content.findViewById(R.id.enable);
         if(onClickListener!=null)
             enable_button.setOnClickListener(onClickListener);
         else
