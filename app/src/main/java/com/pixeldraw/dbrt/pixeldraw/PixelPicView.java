@@ -94,18 +94,17 @@ public class PixelPicView extends View {
                 canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, this.getMeasuredHeight() / Plate[0].length * i1, this.getMeasuredWidth() / Plate.length * (i + 1), this.getMeasuredHeight() / Plate[0].length * (i1 + 1), mpaint);
             }
         if(isWeb) {
-            for (int i = 1; i < Plate.length+1; i++)
+            for (int i = 1; i < Plate.length; i++)
                 canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, 0f, this.getMeasuredWidth() / Plate.length * i + (getMeasuredWidth() / getWidthPixels() * 0.05f), this.getMeasuredHeight(), mpaint2);
-            for (int i = 1; i < Plate[0].length+1; i++)
+            for (int i = 1; i < Plate[0].length; i++)
                 canvas.drawRect(0f,this.getMeasuredHeight() / Plate[0].length * i - (getMeasuredHeight() / getHeightPixels() * 0.05f),getMeasuredWidth(),this.getMeasuredHeight() / Plate[0].length * i, mpaint2);
 
         }
-        Rect rect=canvas.getClipBounds();
         Paint paint=new Paint();
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4f);
-        canvas.drawRect(rect,paint);
+        canvas.drawRect(0,0,this.getMeasuredWidth(),this.getMeasuredHeight(),paint);
         super.onDraw(canvas);
     }
     public void enableWeb(boolean b){

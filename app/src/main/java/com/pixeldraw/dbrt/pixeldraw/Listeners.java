@@ -41,6 +41,8 @@ public class Listeners {
                 }else{
                     MainActivity.enable_move =true;
                     v.setBackgroundResource(R.drawable.shape_sel);
+                    MA_INSTANCE.pic.setOnPixelTouchListener(null);
+                    MA_INSTANCE.pic.setOnPixelClickListener(null);
                 }
             }
         };
