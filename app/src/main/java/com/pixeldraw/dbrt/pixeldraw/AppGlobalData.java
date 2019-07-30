@@ -21,6 +21,7 @@ import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Process;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.Gravity;
 
@@ -103,6 +104,7 @@ public abstract class AppGlobalData {
             e.printStackTrace();
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static Bitmap initColorfulBar(){
         //color
         colorful_bar= Bitmap.createBitmap(300,870,Bitmap.Config.ARGB_8888);
@@ -118,6 +120,7 @@ public abstract class AppGlobalData {
         return colorful_bar;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public static Bitmap makeColorPlane(int color){
         Drawable d=new ColorDrawable(color);
         LayerDrawable l= new LayerDrawable(new Drawable[]{d, black, white});
@@ -127,7 +130,7 @@ public abstract class AppGlobalData {
         l.draw(canvas);
         return color_plane;
     }
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static Bitmap makeAlphaPlane(int color){
         int turned_color=Color.argb(0,Color.red(color),Color.green(color),Color.blue(color));
         GradientDrawable ll=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{color,turned_color});

@@ -58,8 +58,8 @@ public class SettingDialog extends Dialog {
     @Override
     public void show() {
         View content=LayoutInflater.from(getContext()).inflate(R.layout.dialog_select,null,true);
-        cancel_button=(Button) content.findViewById(R.id.cancel);
-        enable_button=(Button) content.findViewById(R.id.enable);
+        cancel_button=content.findViewById(R.id.cancel);
+        enable_button=content.findViewById(R.id.enable);
         cancel_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

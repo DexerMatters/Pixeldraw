@@ -2,6 +2,8 @@ package com.pixeldraw.dbrt.pixeldraw;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.*;
 public class Listeners {
     public static View.OnClickListener getGraphToolOnClickListener(View v,int graph_id){
         return new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 MA_INSTANCE.graph_tools[graph_id]=!MA_INSTANCE.graph_tools[graph_id];
@@ -30,7 +33,6 @@ public class Listeners {
                             MA_INSTANCE.pic.setOnPixelTouchListener(CircleListener);
                             break;
                         case 4:
-                            MA_INSTANCE.pic.setOnPixelTouchListener(CircleHolListener);
                             break;
                         default:
                             break;
@@ -47,6 +49,7 @@ public class Listeners {
         private int x_0=0;
         private int y_0=0;
         private Bitmap last_bmp;
+        @TargetApi(Build.VERSION_CODES.O)
         @Override
         public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
             if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
@@ -78,6 +81,7 @@ public class Listeners {
         private int x_0=0;
         private int y_0=0;
         private Bitmap last_bmp;
+        @TargetApi(Build.VERSION_CODES.O)
         @Override
         public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
             if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
@@ -107,6 +111,7 @@ public class Listeners {
         private int x_0=0;
         private int y_0=0;
         private Bitmap last_bmp;
+        @TargetApi(Build.VERSION_CODES.O)
         @Override
         public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
             if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
@@ -137,39 +142,11 @@ public class Listeners {
             super.onTouch(view, motionEvent, x, y);
         }
     };
-    public static PixelPicView.OnPixelTouchListener CircleHolListener=new PixelPicView.OnPixelTouchListener() {
-        private int x_0=0;
-        private int y_0=0;
-        private Bitmap last_bmp;
-        @Override
-        public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
-            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
-                MA_INSTANCE.pic.loadHistoryBitmap();
-                last_bmp=MA_INSTANCE.pic.getBitmap();
-                x_0=x;
-                y_0=y;
-            }
-            if(motionEvent.getAction()==MotionEvent.ACTION_MOVE) {
-                MA_INSTANCE.pic.updateBitmap(last_bmp);
-                for(float s=0;s<60;s+=0.1f)
-                {
-                    float sin= Math.round(Math.sin(s*6*Math.PI/180)*(MA_INSTANCE.getDistance(x_0,y_0,x,y))*100000)/100000;
-                    float cos= Math.round(Math.cos(s*6*Math.PI/180)*(MA_INSTANCE.getDistance(x_0,y_0,x,y))*100000)/100000;
-                    MA_INSTANCE.pic.set(x_0+sin,y_0+cos,MainActivity.pen_color);
-                }
-            }
-            if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
-                x_0=0;
-                y_0=0;
-                last_bmp=null;
-            }
-            super.onTouch(view, motionEvent, x, y);
-        }
-    };
     public static PixelPicView.OnPixelTouchListener CircleListener=new PixelPicView.OnPixelTouchListener() {
         private int x_0=0;
         private int y_0=0;
         private Bitmap last_bmp;
+        @TargetApi(Build.VERSION_CODES.O)
         @Override
         public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
             if(motionEvent.getAction()==MotionEvent.ACTION_DOWN) {
@@ -180,14 +157,8 @@ public class Listeners {
             }
             if(motionEvent.getAction()==MotionEvent.ACTION_MOVE) {
                 MA_INSTANCE.pic.updateBitmap(last_bmp);
-                for(float s=0;s<60;s+=0.1f)
-                {
-                    for(float i=1;i<=MA_INSTANCE.getDistance(x_0,y_0,x,y);i+=0.1f) {
-                        float sin = Math.round(Math.sin(s * 6 * Math.PI / 180) * (i) * 100000) / 100000;
-                        float cos = Math.round(Math.cos(s * 6 * Math.PI / 180) * (i) * 100000) / 100000;
-                        MA_INSTANCE.pic.set(x_0 + sin, y_0 + cos, MainActivity.pen_color);
-                    }
-                }
+                int s=x_0-x>0?1:-1;
+                int s_=y_0-y>0?1:-1;
             }
             if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
                 x_0=0;
@@ -197,6 +168,7 @@ public class Listeners {
             super.onTouch(view, motionEvent, x, y);
         }
     };
+    @TargetApi(Build.VERSION_CODES.O)
     public static void resetListenersForTools(){
         MA_INSTANCE.tools=new boolean[]{false,false,false,false};
         MA_INSTANCE.pic.setOnPixelTouchListener(null);
@@ -206,8 +178,9 @@ public class Listeners {
         MA_INSTANCE.button_bucket.setBackgroundResource(R.drawable.shape_sel);
         MA_INSTANCE.button_colorpicker.setBackgroundResource(R.drawable.shape_sel);
     }
+    @TargetApi(Build.VERSION_CODES.O)
     public static void resetListenersForGraphTools(){
-        MA_INSTANCE.graph_tools=new boolean[]{false,false,false,false,false};
+        MA_INSTANCE.graph_tools=new boolean[]{false,false,false,false};
         MA_INSTANCE.pic.setOnPixelTouchListener(null);
         MA_INSTANCE.pic.setOnPixelClickListener(null);
         MA_INSTANCE.b_line.setBackgroundResource(R.drawable.shape_sel);

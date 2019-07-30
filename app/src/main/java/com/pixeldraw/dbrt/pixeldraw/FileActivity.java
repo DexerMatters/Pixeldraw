@@ -28,15 +28,15 @@ public class FileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file);
 
-        Button button=(Button) findViewById(R.id.button_backtofore);
-        final ListView listView=(ListView) findViewById(R.id.list);
-        final TextView path=(TextView) findViewById(R.id.path);
+        Button button=findViewById(R.id.button_backtofore);
+        final ListView listView=findViewById(R.id.list);
+        final TextView path=findViewById(R.id.path);
         path.setText(Environment.getExternalStorageDirectory().getAbsolutePath());
         listView.setAdapter(getAdapterOfFiles(Environment.getExternalStorageDirectory().getAbsolutePath()));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView name=(TextView)view.findViewById(R.id.name);
+                TextView name=view.findViewById(R.id.name);
                 Log.d(TAG,"Path:"+pathStr);
                 if(getAdapterOfFiles(pathStr+"/"+name.getText())!=null) {
                     pathStr+="/"+name.getText();

@@ -9,7 +9,7 @@
                 android:bottomLeftRadius="3dp"/>
         </shape>
     </item>
-    <item android:top="1dp" android:left="1dp">
+    <item android:top="1dp" android:start="1dp">
         <shape>
             <solid android:color="@color/button_selected" />
             <corners android:topLeftRadius="5dp"
