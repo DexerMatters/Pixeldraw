@@ -83,28 +83,28 @@ public class PixelPicView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        Paint mpaint2 = new Paint();
+        mpaint2.setAntiAlias(false);
+        mpaint2.setColor(Color.WHITE);
         for (int i = 0; i < Plate.length; i++)
             for (int i1 = 0; i1 < Plate[i].length; i1++) {
                 Paint mpaint = new Paint();
                 mpaint.setAntiAlias(false);
                 mpaint.setColor(Plate[i][i1]);
-
-                Paint mpaint2 = new Paint();
-                mpaint2.setAntiAlias(false);
-                mpaint2.setColor(Color.WHITE);
-                canvas.drawRect(this.getWidth() / Plate.length * i, this.getHeight() / Plate[0].length * i1, this.getWidth() / Plate.length * (i + 1), this.getHeight() / Plate[0].length * (i1 + 1), mpaint);
-                if(isWeb) {
-                    canvas.drawRect(this.getWidth() / Plate.length * i, this.getHeight() / Plate[0].length * i1, this.getWidth() / Plate.length * i - this.getWidth() / Plate.length / webWidth, this.getHeight() / Plate[0].length * (i1 + 1), mpaint2);
-                    canvas.drawRect(this.getWidth() / Plate.length * i, this.getHeight() / Plate[0].length * i1, this.getWidth() / Plate.length * (i + 1), this.getHeight() / Plate[0].length * i1 - this.getWidth() / Plate.length / webWidth, mpaint2);
-                }
+                canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, this.getMeasuredHeight() / Plate[0].length * i1, this.getMeasuredWidth() / Plate.length * (i + 1), this.getMeasuredHeight() / Plate[0].length * (i1 + 1), mpaint);
             }
+        if(isWeb) {
+            for (int i = 1; i < Plate.length; i++)
+                canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, 0f, this.getMeasuredWidth() / Plate.length * i + (getMeasuredWidth() / getWidthPixels() * 0.05f), this.getMeasuredHeight(), mpaint2);
+            for (int i = 1; i < Plate[0].length; i++)
+                canvas.drawRect(0f,this.getMeasuredHeight() / Plate[0].length * i - (getMeasuredHeight() / getHeightPixels() * 0.05f),getMeasuredWidth(),this.getMeasuredHeight() / Plate[0].length * i, mpaint2);
+
+        }
         Rect rect=canvas.getClipBounds();
-        rect.bottom--;
-        rect.right--;
         Paint paint=new Paint();
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(4);
+        paint.setStrokeWidth(4f);
         canvas.drawRect(rect,paint);
         super.onDraw(canvas);
     }
@@ -135,13 +135,15 @@ public class PixelPicView extends View {
     }
 
     public void set(int x, int y, int value){
-        if(Plate[x][y]!=value)
-            Plate[x][y]=value;
+        if(x>=0&&x<widthPixels&&y>=0&&y<heightPixels)
+            if(Plate[x][y]!=value)
+                Plate[x][y]=value;
         invalidate();
     }
     public void set(float x, float y, int value){
-        if(Plate[(int)x][(int)y]!=value)
-            Plate[(int)x][(int)y]=value;
+        if(x>=0&&x<widthPixels&&y>=0&&y<heightPixels)
+            if(Plate[(int)x][(int)y]!=value)
+                Plate[(int)x][(int)y]=value;
         invalidate();
     }
     public int get(int x,int y){
