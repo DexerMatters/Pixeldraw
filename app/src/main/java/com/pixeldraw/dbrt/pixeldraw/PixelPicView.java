@@ -94,9 +94,9 @@ public class PixelPicView extends View {
                 canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, this.getMeasuredHeight() / Plate[0].length * i1, this.getMeasuredWidth() / Plate.length * (i + 1), this.getMeasuredHeight() / Plate[0].length * (i1 + 1), mpaint);
             }
         if(isWeb) {
-            for (int i = 1; i < Plate.length; i++)
+            for (int i = 1; i < Plate.length+1; i++)
                 canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, 0f, this.getMeasuredWidth() / Plate.length * i + (getMeasuredWidth() / getWidthPixels() * 0.05f), this.getMeasuredHeight(), mpaint2);
-            for (int i = 1; i < Plate[0].length; i++)
+            for (int i = 1; i < Plate[0].length+1; i++)
                 canvas.drawRect(0f,this.getMeasuredHeight() / Plate[0].length * i - (getMeasuredHeight() / getHeightPixels() * 0.05f),getMeasuredWidth(),this.getMeasuredHeight() / Plate[0].length * i, mpaint2);
 
         }
@@ -235,7 +235,7 @@ public class PixelPicView extends View {
                             if (motionEvent.getX() > i * (getMeasuredWidth()/getWidthPixels())
                                     && motionEvent.getX() < (i + 1) * (getMeasuredWidth()/getWidthPixels())
                                     && motionEvent.getY() > i1 * (getMeasuredHeight()/getHeightPixels())
-                                    && motionEvent.getY() < (i1 + 1) * (getMeasuredHeight()/getWidthPixels())) {
+                                    && motionEvent.getY() < (i1 + 1) * (getMeasuredHeight()/getHeightPixels())) {
                                 pixelTouchListener.onTouch(instance, motionEvent, i, i1);
                             }
                         }

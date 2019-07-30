@@ -45,7 +45,6 @@ public class Listeners {
             }
         };
     }
-<<<<<<< HEAD
     public static PixelPicView.OnPixelTouchListener LineListener=new PixelPicView.OnPixelTouchListener() {
         private int x_0=0;
         private int y_0=0;
@@ -76,8 +75,6 @@ public class Listeners {
             super.onTouch(view, motionEvent, x, y);
         }
     };
-=======
->>>>>>> parent of a8db2bf... Drawing lines added.Borders added.Fix bugs of opening pic
     public static PixelPicView.OnPixelTouchListener SquareListener=new PixelPicView.OnPixelTouchListener() {
         private int x_0=0;
         private int y_0=0;
