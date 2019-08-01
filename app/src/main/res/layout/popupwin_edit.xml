@@ -22,6 +22,21 @@
         android:src="@drawable/pen" />
 
     <ImageButton
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_size"
+        android:layout_marginBottom="6dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/shape_sel"
+        android:cropToPadding="false"
+        android:paddingBottom="6dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/marker_pen" />
+
+    <ImageButton
         android:id="@+id/button2"
         android:layout_width="@dimen/button_size"
         android:layout_height="@dimen/button_size"
@@ -37,7 +52,7 @@
         android:src="@drawable/color_picker" />
 
     <ImageButton
-        android:id="@+id/button1"
+        android:id="@+id/button5"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_size"
         android:layout_marginBottom="6dp"
@@ -49,7 +64,7 @@
         android:paddingRight="6dp"
         android:paddingTop="6dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/marker_pen" />
+        android:src="@drawable/eraser" />
 
     <ImageButton
         android:id="@+id/button"

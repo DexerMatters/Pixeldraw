@@ -34,16 +34,16 @@ import static android.content.ContentValues.TAG;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class MainActivity extends Activity {
-    public boolean[] tools={false,false,false,false};
+    public boolean[] tools={false,false,false,false,false};
     public boolean[] graph_tools={false,false,false,false,false};
     private FrameLayout screen;
     private TextView colorviewer;
     private Drawable scroll_background;
     private ListView button_colorlist;
-    private PixelPicView.OnPixelTouchListener onPixelClickListener,onPixelTouchListener,onBucketUseListener,onColorPickerUseListener;
+    private PixelPicView.OnPixelTouchListener onPixelClickListener,onPixelTouchListener,onBucketUseListener,onColorPickerUseListener,onEraserUseClickListener;
     private Bitmap bitmap;
     private float pixel_size_0;
-    public ImageButton button_pen,button_drawpen,button_bucket,button_colorpicker,b_line,b_square,b_square_hol,b_circle,b_circle_hol;
+    public ImageButton button_pen,button_drawpen,button_eraser,button_bucket,button_colorpicker,b_line,b_square,b_square_hol,b_circle,b_circle_hol;
     public DisplayMetrics displayMetrics=new DisplayMetrics();
     public ColorListAdapter colorListAdapter=new ColorListAdapter(this,new ArrayList<Integer>());
     public Color al_color=Color.valueOf(00000000);
@@ -82,9 +82,20 @@ public class MainActivity extends Activity {
         onPixelTouchListener=new PixelPicView.OnPixelTouchListener() {
             @Override
             public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
-                pic.set(x,y,pen_color);
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN)
                     pic.loadHistoryBitmap();
+                else
+                    pic.set(x,y,pen_color);
+                super.onTouch(view, motionEvent, x, y);
+            }
+        };
+        onEraserUseClickListener=new PixelPicView.OnPixelTouchListener() {
+            @Override
+            public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN)
+                    pic.loadHistoryBitmap();
+                else
+                    pic.set(x,y,Color.TRANSPARENT);
                 super.onTouch(view, motionEvent, x, y);
             }
         };
@@ -145,7 +156,7 @@ public class MainActivity extends Activity {
 
                 pixel_size_0=pic.getScaleX()*dip2px(300)/pic.getWidthPixels();
                 {//version operation
-                    String bytime="2019-08-01 12:59:59";
+                    String bytime="2019-09-01 12:59:59";
                     try {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date date = dateFormat.parse(bytime);
@@ -214,10 +225,12 @@ public class MainActivity extends Activity {
                         button_drawpen = editView.findViewById(R.id.button1);
                         button_bucket = editView.findViewById(R.id.button);
                         button_colorpicker = editView.findViewById(R.id.button2);
+                        button_eraser=editView.findViewById(R.id.button5);
                         button_pen.setOnClickListener(getToolOnClickListener(button_pen, 0));
                         button_drawpen.setOnClickListener(getToolOnClickListener(button_drawpen, 1));
                         button_bucket.setOnClickListener(getToolOnClickListener(button_bucket,2));
                         button_colorpicker.setOnClickListener(getToolOnClickListener(button_colorpicker,3));
+                        button_eraser.setOnClickListener(getToolOnClickListener(button_eraser,4));
                         button_colorlist.setAdapter(colorListAdapter);
                         button_colorlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -682,6 +695,9 @@ public class MainActivity extends Activity {
                             break;
                         case 3:
                             pic.setOnPixelTouchListener(onColorPickerUseListener);
+                            break;
+                        case 4:
+                            pic.setOnPixelTouchListener(onEraserUseClickListener);
                             break;
                     }
                 }else{

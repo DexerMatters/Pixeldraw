@@ -206,11 +206,12 @@ public class Listeners {
     };
     @TargetApi(Build.VERSION_CODES.O)
     public static void resetListenersForTools(){
-        MA_INSTANCE.tools=new boolean[]{false,false,false,false};
+        MA_INSTANCE.tools=new boolean[]{false,false,false,false,false};
         MA_INSTANCE.pic.setOnPixelTouchListener(null);
         MA_INSTANCE.pic.setOnPixelClickListener(null);
         MA_INSTANCE.button_pen.setBackgroundResource(R.drawable.shape_sel);
         MA_INSTANCE.button_drawpen.setBackgroundResource(R.drawable.shape_sel);
+        MA_INSTANCE.button_eraser.setBackgroundResource(R.drawable.shape_sel);
         MA_INSTANCE.button_bucket.setBackgroundResource(R.drawable.shape_sel);
         MA_INSTANCE.button_colorpicker.setBackgroundResource(R.drawable.shape_sel);
     }

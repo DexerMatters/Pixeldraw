@@ -6,4 +6,5 @@
     <dimen name="button_text_size">12dp</dimen>
     <dimen name="dialog_title_size">5dp</dimen>
     <dimen name="dialog_text_size">3.5dp</dimen>
+    <dimen name="start_title">40sp</dimen>
 </resources>
