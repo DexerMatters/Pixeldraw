@@ -22,6 +22,7 @@ public class Listeners {
                     MainActivity.enable_move=false;
                     switch (graph_id){
                         case 0:
+                            MA_INSTANCE.pic.setOnPixelTouchListener(LineListener);
                             break;
                         case 1:
                             MA_INSTANCE.pic.setOnPixelTouchListener(SquareListener);
