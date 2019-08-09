@@ -199,9 +199,10 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View view) {
                         mainWin.dismiss();
+                        returnWin=showReturnWindow(R.layout.popupwin_return);
                         editWin = showMainPopWindow(R.layout.popupwin_edit);
                         colorWin = showSecPopWindow(R.layout.popupwin_color);
-                        returnWin=showReturnWindow(R.layout.popupwin_return);
+
                         ImageButton return_button=returnWin.getContentView().findViewById(R.id.button_return);
                         return_button.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -259,23 +260,12 @@ public class MainActivity extends Activity {
                                 });
                             }
                         });
-                        button_back.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                mainWin.showAtLocation(getWindow().getDecorView(), Gravity.TOP | Gravity.START, 20, 20);
-                                Listeners.resetListenersForTools();
-                                enable_move=true;
-                                editWin.dismiss();
-                                colorWin.dismiss();
-                                returnWin.dismiss();
-                            }
-                        });
                         button_graph.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 graphWin=showMainPopWindow(R.layout.popupwin_graph);
                                 View graphView=graphWin.getContentView();
-                                ImageButton b_back=graphView.findViewById(R.id.button_back);
+                                ImageButton b_back=graphView.findViewById(R.id.button_back_);
                                 b_line=graphView.findViewById(R.id.button_line);
                                 b_square=graphView.findViewById(R.id.button_square);
                                 b_square_hol=graphView.findViewById(R.id.button_square_hol);
@@ -299,6 +289,17 @@ public class MainActivity extends Activity {
                                 editWin.dismiss();
                             }
                         });
+                        button_back.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                mainWin.showAtLocation(getWindow().getDecorView(), Gravity.TOP | Gravity.START, 20, 20);
+                                Listeners.resetListenersForTools();
+                                enable_move=true;
+                                editWin.dismiss();
+                                colorWin.dismiss();
+                                returnWin.dismiss();
+                            }
+                        });
                     }
                 });
                 button_B.setOnClickListener(new View.OnClickListener() {
@@ -307,7 +308,7 @@ public class MainActivity extends Activity {
 
                         fileWin=showMainPopWindow(R.layout.popupwin_file);
                         View con=fileWin.getContentView();
-                        ImageButton button_back=con.findViewById(R.id.button_back),
+                        ImageButton button_back=con.findViewById(R.id.button_back__),
                                 button_open_file=con.findViewById(R.id.button_open_file),
                                 button_save=con.findViewById(R.id.button_save),
                                 button_save_as=con.findViewById(R.id.button_save_as),

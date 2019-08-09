@@ -65,7 +65,7 @@
         android:src="@drawable/save_as" />
 
     <ImageButton
-        android:id="@+id/button_back"
+        android:id="@+id/button_back__"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_size"
         android:adjustViewBounds="false"
