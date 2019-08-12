@@ -29,6 +29,8 @@ import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.MA_INSTANCE;
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.Plates;
 
 import static android.content.ContentValues.TAG;
+import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.Saved_Plates;
+
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class PixelPicView extends View {
     private Canvas canvas=new Canvas();
@@ -157,7 +159,10 @@ public class PixelPicView extends View {
     }
     public void loadHistoryBitmap(){
         Plates.add(getBitmap());
-        Log.d(TAG, "loadHistoryBitmap() returned: ");
+        MA_INSTANCE.return_button.setVisibility(View.VISIBLE);
+        if(Saved_Plates.size()!=0){
+            Saved_Plates=new ArrayList<>();
+        }
     }
     public Bitmap getBitmap(){
         Bitmap bitmap=Bitmap.createBitmap(widthPixels,heightPixels,Bitmap.Config.ARGB_8888);

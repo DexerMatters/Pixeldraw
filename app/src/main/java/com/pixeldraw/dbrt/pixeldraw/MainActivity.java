@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.*;
 import android.support.annotation.RequiresApi;
+import android.text.Editable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
@@ -43,7 +44,7 @@ public class MainActivity extends Activity {
     private PixelPicView.OnPixelTouchListener onPixelClickListener,onPixelTouchListener,onBucketUseListener,onColorPickerUseListener,onEraserUseClickListener;
     private Bitmap bitmap;
     private float pixel_size_0;
-    public ImageButton button_pen,button_drawpen,button_eraser,button_bucket,button_colorpicker,b_line,b_square,b_square_hol,b_circle,b_circle_hol;
+    public ImageButton button_pen,button_drawpen,button_eraser,button_bucket,button_colorpicker,b_line,b_square,b_square_hol,b_circle,b_circle_hol,return_button,undo_button;
     public DisplayMetrics displayMetrics=new DisplayMetrics();
     public ColorListAdapter colorListAdapter=new ColorListAdapter(this,new ArrayList<Integer>());
     public Color al_color=Color.valueOf(00000000);
@@ -203,18 +204,34 @@ public class MainActivity extends Activity {
                         editWin = showMainPopWindow(R.layout.popupwin_edit);
                         colorWin = showSecPopWindow(R.layout.popupwin_color);
 
-                        ImageButton return_button=returnWin.getContentView().findViewById(R.id.button_return);
+                        return_button=returnWin.getContentView().findViewById(R.id.button_return);
+                        undo_button=returnWin.getContentView().findViewById(R.id.button_undo);
                         return_button.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 if(AppGlobalData.Plates.size()!=0) {
-                                    pic.setInitBitmap(AppGlobalData.Plates.get(AppGlobalData.Plates.size()-1));
-                                    pic.updateCanvas();
+                                    undo_button.setVisibility(View.VISIBLE);
+                                    return_button.setVisibility(View.VISIBLE);
+                                    AppGlobalData.Saved_Plates.add(AppGlobalData.Plates.get(AppGlobalData.Plates.size()-1));
+                                    pic.updateBitmap(AppGlobalData.Plates.get(AppGlobalData.Plates.size()-1));
                                     AppGlobalData.Plates.remove(AppGlobalData.Plates.size()-1);
                                 }
+                                if(AppGlobalData.Plates.size()==0)
+                                    return_button.setVisibility(View.INVISIBLE);
                             }
                         });
-
+                        undo_button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if(AppGlobalData.Saved_Plates.size()>1){
+                                    undo_button.setVisibility(View.VISIBLE);
+                                    pic.updateBitmap(AppGlobalData.Saved_Plates.get(AppGlobalData.Saved_Plates.size()-2));
+                                    AppGlobalData.Saved_Plates.remove(AppGlobalData.Saved_Plates.size()-2);
+                                }
+                                if(AppGlobalData.Saved_Plates.size()==1)
+                                    undo_button.setVisibility(View.INVISIBLE);
+                            }
+                        });
                         View editView = editWin.getContentView();
                         View colorView = colorWin.getContentView();
 
@@ -494,7 +511,7 @@ public class MainActivity extends Activity {
     }
     private PopupWindow showReturnWindow(int layout_id){
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-        PopupWindow popupWindow=new PopupWindow(dip2px(200),dip2px(200));
+        PopupWindow popupWindow=new PopupWindow(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         View view=inflater.inflate(layout_id,null,true);
         popupWindow.setContentView(view);
         //popupWindow.setOutsideTouchable(false);
@@ -531,6 +548,29 @@ public class MainActivity extends Activity {
         color_opacity.setBackground(new BitmapDrawable(AppGlobalData.alpha_plane));
         color_select.setBackground(new BitmapDrawable(AppGlobalData.colorful_bar));
         updateColorViewer(color_before);
+        colorviewer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("long","true");
+                colorviewer.setFocusable(true);
+                colorviewer.performClick();
+            }
+        });
+        colorviewer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b&&colorviewer.isFocusable()){
+                    int color=fromStrToARGB(colorviewer.getText().toString()).toArgb();
+                    AppGlobalData.makeBrightnessPlane(color);
+                    AppGlobalData.makeAlphaPlane(color);
+                    color_brightness.setBackground(new BitmapDrawable(AppGlobalData.brightness_plane));
+                    color_adjust.setBackground(new BitmapDrawable(AppGlobalData.makeColorPlane(color)));
+                    color_opacity.setBackground(new BitmapDrawable(AppGlobalData.alpha_plane));
+                    updateColorViewer(color);
+                    colorviewer.setFocusable(false);
+                }
+            }
+        });
         color_select.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -716,5 +756,15 @@ public class MainActivity extends Activity {
         return ((float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
     }
 
-
+    private static Color fromStrToARGB(String str) {
+        String str1 = str.substring(0, 2);
+        String str2 = str.substring(2, 4);
+        String str3 = str.substring(4, 6);
+        String str4 = str.substring(6, 8);
+        int alpha = Integer.parseInt(str1, 16);
+        int red = Integer.parseInt(str2, 16);
+        int green = Integer.parseInt(str3, 16);
+        int blue = Integer.parseInt(str4, 16);
+        return Color.valueOf(red, green, blue, alpha);
+    }
 }

@@ -42,7 +42,7 @@
                     android:cropToPadding="false"
                     android:scaleType="fitStart" />
 
-                <TextView
+                <EditText
                     android:id="@+id/colorviewer"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -50,10 +50,11 @@
                     android:layout_marginTop="8dp"
                     android:layout_weight="0.3"
                     android:background="?android:attr/colorBackground"
-                    android:editable="false"
+                    android:focusable="false"
                     android:gravity="center"
+                    android:inputType="text"
+                    android:selectAllOnFocus="true"
                     android:textColor="@android:color/background_light"
-                    android:textIsSelectable="true"
                     android:textSize="@dimen/text_size" />
 
             </LinearLayout>

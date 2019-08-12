@@ -39,6 +39,7 @@ public abstract class AppGlobalData {
     public static float FONT_SIZE;
     public static float DEFAULT_FONT_SIZE;
     public static ArrayList<Bitmap> Plates=new ArrayList<>();
+    public static ArrayList<Bitmap> Saved_Plates=new ArrayList<>();
     public static Bitmap colorful_bar;
     public static Bitmap color_plane=Bitmap.createBitmap(800,800,Bitmap.Config.ARGB_8888);
     public static Bitmap alpha_plane=Bitmap.createBitmap(870,300,Bitmap.Config.ARGB_8888);

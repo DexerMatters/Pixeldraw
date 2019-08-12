@@ -19,6 +19,23 @@
         android:paddingRight="6dp"
         android:paddingTop="6dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/return_to" />
+        android:src="@drawable/redo"
+        android:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/button_undo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_size"
+        android:layout_marginTop="6dp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/shape_sel"
+        android:cropToPadding="false"
+        android:paddingBottom="6dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="6dp"
+        android:paddingTop="6dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/undo"
+        android:visibility="invisible" />
 
 </LinearLayout>
