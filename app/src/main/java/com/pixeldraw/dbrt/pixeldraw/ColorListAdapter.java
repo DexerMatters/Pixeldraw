@@ -38,6 +38,9 @@ public class ColorListAdapter extends BaseAdapter {
         if(this.color.size()+1>w) this.color.remove(this.color.size()-1);
         this.color.add(0,color);
     }
+    public void removeColor(int index){
+        this.color.remove(index);
+    }
     @TargetApi(Build.VERSION_CODES.O)
     public Color getColor(int index){
         return Color.valueOf(color.get(index));

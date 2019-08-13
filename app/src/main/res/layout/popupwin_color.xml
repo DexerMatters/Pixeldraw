@@ -19,7 +19,7 @@
         android:paddingRight="6dp"
         android:paddingTop="6dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/pen" />
+        android:src="@drawable/palette_color" />
 
     <ListView
         android:id="@+id/color_list"

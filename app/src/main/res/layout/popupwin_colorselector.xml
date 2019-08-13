@@ -50,10 +50,11 @@
                     android:layout_marginTop="8dp"
                     android:layout_weight="0.3"
                     android:background="?android:attr/colorBackground"
-                    android:focusable="false"
+                    android:cursorVisible="false"
+                    android:filterTouchesWhenObscured="false"
                     android:gravity="center"
                     android:inputType="text"
-                    android:selectAllOnFocus="true"
+                    android:focusable="false"
                     android:textColor="@android:color/background_light"
                     android:textSize="@dimen/text_size" />
 

@@ -104,13 +104,13 @@ public class MainActivity extends Activity {
             private int orginal_color;
             public int loop(int x,int y){
                 pic.set(x,y,pen_color);
-                if(pic.get(x+1,y)==orginal_color)
+                if(x+1<pic.getWidthPixels()&&pic.get(x+1,y)==orginal_color)
                     loop(x+1,y);
-                if(pic.get(x-1,y)==orginal_color)
+                if(x-1>=0&&pic.get(x-1,y)==orginal_color)
                     loop(x-1,y);
-                if(pic.get(x,y+1)==orginal_color)
+                if(y+1<pic.getHeightPixels()&&pic.get(x,y+1)==orginal_color)
                     loop(x,y+1);
-                if(pic.get(x,y-1)==orginal_color)
+                if(y-1>=0&&pic.get(x,y-1)==orginal_color)
                     loop(x,y-1);
                 return 0;
             }
@@ -150,7 +150,6 @@ public class MainActivity extends Activity {
             public void run() {
                 pic.setHeightPixels(16);
                 pic.setWidthPixels(16);
-                pic.setInitCloth(Color.WHITE,MainActivity.this.getResources().getColor(R.color.init_pic));
                 pic.updateCanvas();
 
                 colorListAdapter.addColor(Color.BLACK);
@@ -256,6 +255,7 @@ public class MainActivity extends Activity {
                                 if (i != 0) {
                                     al_color = colorListAdapter.getColor(i);
                                     pen_color = al_color.toArgb();
+                                    colorListAdapter.removeColor(i);
                                     colorListAdapter.addColor(al_color.toArgb());
                                     button_colorlist.setAdapter(colorListAdapter);
                                 }
@@ -548,18 +548,10 @@ public class MainActivity extends Activity {
         color_opacity.setBackground(new BitmapDrawable(AppGlobalData.alpha_plane));
         color_select.setBackground(new BitmapDrawable(AppGlobalData.colorful_bar));
         updateColorViewer(color_before);
-        colorviewer.setOnClickListener(new View.OnClickListener() {
+        /*colorviewer.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View view) {
-                Log.d("long","true");
-                colorviewer.setFocusable(true);
-                colorviewer.performClick();
-            }
-        });
-        colorviewer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(!b&&colorviewer.isFocusable()){
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(keyEvent.getAction()==KeyEvent.KEYCODE_ENTER){
                     int color=fromStrToARGB(colorviewer.getText().toString()).toArgb();
                     AppGlobalData.makeBrightnessPlane(color);
                     AppGlobalData.makeAlphaPlane(color);
@@ -567,10 +559,10 @@ public class MainActivity extends Activity {
                     color_adjust.setBackground(new BitmapDrawable(AppGlobalData.makeColorPlane(color)));
                     color_opacity.setBackground(new BitmapDrawable(AppGlobalData.alpha_plane));
                     updateColorViewer(color);
-                    colorviewer.setFocusable(false);
                 }
+                return false;
             }
-        });
+        });*/
         color_select.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -602,7 +594,6 @@ public class MainActivity extends Activity {
                     AppGlobalData.makeAlphaPlane(color_touch);
                     AppGlobalData.makeBrightnessPlane(color_touch);
                     color_opacity.setBackground(new BitmapDrawable(AppGlobalData.alpha_plane));
-                    color_brightness.setBackground(new BitmapDrawable(AppGlobalData.brightness_plane));
                     updateColorViewer(color_touch);
                 }catch (IllegalArgumentException e){
                     e.printStackTrace();
