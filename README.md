@@ -22,4 +22,4 @@ On the one hand,we don't have so much time.On the other hand,we may not have eno
 - How can I get Pixeldraw?  
 It is alpha.So if you want to get it,you can only talk with me on email or QQ.
 - When does the first beta version come?  
-Till we finish debugging.&
+Till we finish debugging.
