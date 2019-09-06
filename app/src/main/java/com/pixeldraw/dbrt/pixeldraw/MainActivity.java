@@ -156,7 +156,7 @@ public class MainActivity extends Activity {
 
                 pixel_size_0=pic.getScaleX()*dip2px(300)/pic.getWidthPixels();
                 {//version operation
-                    String bytime="2019-09-01 12:59:59";
+                    String bytime="2019-10-01 12:59:59";
                     try {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         Date date = dateFormat.parse(bytime);
@@ -419,7 +419,9 @@ public class MainActivity extends Activity {
     float[] startY= new float[2];
     float[] orginal_pos=new float[2];
     float[] orginal_size=new float[2];
+    float[] rel_midpoint;
     float orginal_distance;
+
     boolean enable_web=false;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -434,11 +436,16 @@ public class MainActivity extends Activity {
                 orginal_pos[0]=pic.getX();
                 orginal_pos[1]=pic.getY();
                 orginal_distance=getDistance(startX[0],startY[0],startX[1],startY[1]);
+                float[] midpoint=new float[]{(startX[0]+startX[1])/2,(startY[0]+startY[1])/2};
+                rel_midpoint=new float[]{midpoint[0]-pic.getX(),midpoint[1]-pic.getY()};
+                pic.setPivotX(rel_midpoint[0]);
+                pic.setPivotY(rel_midpoint[1]);
             }
 
             if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
                 float distence=getDistance(event.getX(0),event.getY(0),event.getX(1),event.getY(1));
                 float pixel_size=pic.getScaleX()*dip2px(300)/pic.getWidthPixels();
+
                 if (orginal_size[0] + (distence-orginal_distance) / 300 > 0) {
                     pic.setScaleX(orginal_size[0] + (distence-orginal_distance) / 300);
                     pic.setScaleY(orginal_size[1] + (distence-orginal_distance) / 300);
