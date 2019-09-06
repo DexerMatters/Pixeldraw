@@ -392,6 +392,8 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onStop() {
+        Intent intent=new Intent(this,AppService.class);
+        startService(intent);
         super.onStop();
     }
 
