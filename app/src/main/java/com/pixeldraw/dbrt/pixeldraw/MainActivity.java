@@ -68,6 +68,8 @@ public class MainActivity extends Activity {
         AppGlobalData.initailizeData();
         AppGlobalData.initColorfulBar();
 
+        AppGlobalData.addColColors(Color.BLACK);
+
         pic=findViewById(R.id.pic);
         screen=findViewById(R.id.frameLayout);
         onPixelClickListener=new PixelPicView.OnPixelTouchListener() {
@@ -381,11 +383,6 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onResume() {
-        try {
-            pic.setInitBitmap(BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/PixelDraw/recent.png"));
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        }
         super.onResume();
 
     }

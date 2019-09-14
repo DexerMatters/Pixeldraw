@@ -17,6 +17,8 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +37,7 @@ public class FileSaveActivity extends Activity {
         setContentView(R.layout.activity_file_save);
         EditText editText=findViewById(R.id.editText);
         editText.setText(new File(MainActivity.pathStr).getName());
-        Button button=findViewById(R.id.button_backtofore);
+        TextView button=findViewById(R.id.button_backtofore);
         final ListView listView=findViewById(R.id.list);
         final TextView path=findViewById(R.id.path);
         path.setText(Environment.getExternalStorageDirectory().getAbsolutePath());

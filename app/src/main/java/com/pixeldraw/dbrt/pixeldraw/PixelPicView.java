@@ -159,6 +159,10 @@ public class PixelPicView extends View {
     }
     public void loadHistoryBitmap(){
         Plates.add(getBitmap());
+        if(MA_INSTANCE.undo_button.getVisibility()==VISIBLE){
+            MA_INSTANCE.undo_button.setVisibility(INVISIBLE);
+        }
+        AppGlobalData.Saved_Plates=new ArrayList<>();
         MA_INSTANCE.return_button.setVisibility(View.VISIBLE);
         if(Saved_Plates.size()!=0){
             Saved_Plates=new ArrayList<>();

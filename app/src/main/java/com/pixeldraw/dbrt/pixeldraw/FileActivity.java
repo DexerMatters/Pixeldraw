@@ -13,6 +13,9 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+
+import org.w3c.dom.Text;
+
 import java.io.*;
 import java.util.*;
 
@@ -28,7 +31,7 @@ public class FileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file);
 
-        Button button=findViewById(R.id.button_backtofore);
+        TextView button=findViewById(R.id.button_backtofore);
         final ListView listView=findViewById(R.id.list);
         final TextView path=findViewById(R.id.path);
         path.setText(Environment.getExternalStorageDirectory().getAbsolutePath());

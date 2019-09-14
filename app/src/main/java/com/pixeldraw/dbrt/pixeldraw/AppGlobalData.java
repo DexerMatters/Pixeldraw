@@ -1,33 +1,22 @@
 package com.pixeldraw.dbrt.pixeldraw;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LinearGradient;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Process;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
-import android.view.Gravity;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -44,12 +33,13 @@ public abstract class AppGlobalData {
     public static Bitmap color_plane=Bitmap.createBitmap(800,800,Bitmap.Config.ARGB_8888);
     public static Bitmap alpha_plane=Bitmap.createBitmap(870,300,Bitmap.Config.ARGB_8888);
     public static Bitmap brightness_plane=Bitmap.createBitmap(870,300,Bitmap.Config.ARGB_8888);
-    private static File conf_file,bitmap_file;
+    private static File conf_file,bitmap_file,collection_file;
     private static Drawable black;
     private static Drawable white;
     public static void initailizeData(){
         conf_file=new File(MAIN_CONTEXT.getFilesDir().getAbsolutePath()+"/config.cfg");
         bitmap_file=new File(MAIN_CONTEXT.getFilesDir().getAbsolutePath()+"/recent.png");
+        collection_file=new File(MAIN_CONTEXT.getFilesDir().getAbsolutePath()+"/color.txt");
         MA_INSTANCE.getWindowManager().getDefaultDisplay().getMetrics(MA_INSTANCE.displayMetrics);
         DEFAULT_DPI=MA_INSTANCE.displayMetrics.densityDpi;
         DEFAULT_FONT_SIZE=1;
@@ -65,6 +55,9 @@ public abstract class AppGlobalData {
                 DENSITY_DPI=DEFAULT_DPI;
                 FONT_SIZE=DEFAULT_FONT_SIZE;
                 conf_file.createNewFile();
+            }
+            if(!collection_file.exists()){
+                collection_file.createNewFile();
             }
             else {
                 if (conf_file.length() == 0) {
@@ -93,6 +86,41 @@ public abstract class AppGlobalData {
         String[] strings=res.split(",");
         DENSITY_DPI=Integer.parseInt(strings[0]);
         FONT_SIZE=Float.parseFloat(strings[1]);
+    }
+    public static void addColColors(int color){
+        try {
+            FileWriter fw=new FileWriter(collection_file);
+            if(collection_file.length()==0)
+                fw.write(""+color);
+            else
+                fw.write(","+color);
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static int[] getColColors(){
+        ArrayList<Integer> colors=new ArrayList<>();
+
+        try {
+            FileReader fr=new FileReader(collection_file);
+            int buff;
+            String color="";
+            while((buff=fr.read())!=-1){
+                if((char)buff == ','){
+                    colors.add(Integer.parseInt(color));
+                    Log.d("colcolor", color);
+                    color="";
+                }else
+                    color+=(char)buff;
+            }
+            fr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int[] res=new int[colors.size()];
+        for(int i=0;i<res.length;i++) res[i]=colors.get(i);
+        return res;
     }
     public static void updateData(){
         try {
