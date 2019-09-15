@@ -168,6 +168,14 @@ public class PixelPicView extends View {
                 Plate[(int)x][(int)y]=value;
         invalidate();
     }
+    public void drawBitmapAt(int x,int y,Bitmap bitmap){
+        for(int i=x;i<x+bitmap.getWidth()-1;i++)
+            for(int ii=y;ii<y+bitmap.getHeight()-1;ii++){
+                if(i>=0&&i<getWidthPixels())
+                    if(ii>=0&&ii<getHeightPixels())
+                        set(i,ii,bitmap.getPixel(i,ii));
+        }
+    }
     public int get(int x,int y){
         if(x<0||y<0||x>widthPixels||y>heightPixels)
             return 0;
@@ -189,9 +197,16 @@ public class PixelPicView extends View {
             Saved_Plates=new ArrayList<>();
         }
     }
+    public Bitmap getBitmapWithLines(){
+        Bitmap bitmap=Bitmap.createBitmap(widthPixels,heightPixels,Bitmap.Config.ARGB_8888);
+        for (int ii = draw_pos[0]; ii < stop_pos[0]-draw_pos[0]; ii++)
+            for (int ii1 = draw_pos[1]; ii1 < stop_pos[1]-draw_pos[1]; ii1++) {
+                bitmap.setPixel(ii, ii1, get(ii, ii1));
+            }
+        return bitmap;
+    }
     public Bitmap getBitmap(){
         Bitmap bitmap=Bitmap.createBitmap(widthPixels,heightPixels,Bitmap.Config.ARGB_8888);
-        Log.d("bit",bitmap.getWidth()+","+widthPixels+","+Plate.length);
         for (int ii = 0; ii < bitmap.getWidth(); ii++)
             for (int ii1 = 0; ii1 < bitmap.getHeight(); ii1++) {
                 bitmap.setPixel(ii, ii1, get(ii, ii1));

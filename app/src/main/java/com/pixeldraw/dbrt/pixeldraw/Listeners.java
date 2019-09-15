@@ -3,9 +3,11 @@ package com.pixeldraw.dbrt.pixeldraw;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,6 +20,7 @@ import android.widget.PopupWindow;
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.*;
 public class Listeners {
     static PopupWindow dragWin;
+    static boolean hasSelected=false;
     public static View.OnClickListener getGraphToolOnClickListener(View v,int graph_id){
         return new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.O)
@@ -220,28 +223,50 @@ public class Listeners {
                 view.setBackgroundResource(R.drawable.shape_button_selected);
                 MA_INSTANCE.pic.setOnPixelTouchListener(new PixelPicView.OnPixelTouchListener() {
                     int[] pos;
+                    int[] stop_pos;
+                    int[] diff,diff_end;
                     float[] pos_mea;
                     @Override
                     public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
-                        MA_INSTANCE.pic.cleanDrawnLines();
-                        if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-                            if(dragWin!=null) dragWin.dismiss();
-                            pos=new int[]{x,y};
-                            pos_mea=new float[]{motionEvent.getRawX(),motionEvent.getRawY()};
-                        }else {
-                            MA_INSTANCE.pic.drawRectLine(pos[0], pos[1],x+1 ,y+1);
-                        }
-                        if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-                            dragWin=showDragBottomWindow(R.layout.popupwin_select_edit,(int)pos_mea[0]-MA_INSTANCE.dip2px(45),(int)pos_mea[1]-MA_INSTANCE.dip2px(45));
+                        if(!hasSelected) {
+                            MA_INSTANCE.pic.cleanDrawnLines();
+                            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                                //if(dragWin!=null) dragWin.dismiss();
+                                pos = new int[]{x, y};
+                                pos_mea = new float[]{motionEvent.getRawX(), motionEvent.getRawY()};
+                            } else {
+                                MA_INSTANCE.pic.drawRectLine(pos[0], pos[1], x + 1, y + 1);
+                            }
+                            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                                stop_pos = new int[]{x, y};
+                                hasSelected=true;
+                                //dragWin=showDragBottomWindow(R.layout.popupwin_select_edit,(int)pos_mea[0]-MA_INSTANCE.dip2px(45),(int)pos_mea[1]-MA_INSTANCE.dip2px(45));
+                            }
+                        }else{
+                            if(x>=pos[0]&&x<=stop_pos[0]&&y>=pos[1]&&y<=stop_pos[1]) {
+                                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                                    diff = new int[]{pos[0] - x, pos[1] - y};
+                                    diff_end = new int[]{stop_pos[0] - x, stop_pos[1] - y};
+                                }
+                                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                                    pos[0] = diff[0] + x;
+                                    pos[1] = diff[1] + y;
+                                    stop_pos[0] = diff_end[0] + x;
+                                    stop_pos[1] = diff_end[1] + y;
+                                    MA_INSTANCE.pic.cleanDrawnLines();
+                                    MA_INSTANCE.pic.drawRectLine(pos[0], pos[1], stop_pos[0] + 1, stop_pos[1] + 1);
+                                }
+                            }
                         }
                         super.onTouch(view, motionEvent, x, y);
                     }
                 });
             }else{
+                hasSelected=false;
                 MA_INSTANCE.enable_move=true;
                 MA_INSTANCE.pic.setOnPixelTouchListener(null);
                 MA_INSTANCE.pic.cleanDrawnLines();
-                dragWin.dismiss();
+                //dragWin.dismiss();
                 view.setBackgroundResource(R.drawable.shape_button);
             }
             MA_INSTANCE.isEnable_select=!MA_INSTANCE.isEnable_select;
