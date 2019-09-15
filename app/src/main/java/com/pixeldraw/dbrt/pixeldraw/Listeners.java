@@ -2,14 +2,22 @@ package com.pixeldraw.dbrt.pixeldraw;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.*;
 public class Listeners {
+    static PopupWindow dragWin;
     public static View.OnClickListener getGraphToolOnClickListener(View v,int graph_id){
         return new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.O)
@@ -19,7 +27,6 @@ public class Listeners {
                 if(!MA_INSTANCE.graph_tools[graph_id]){
                     resetListenersForGraphTools();
                     v.setBackgroundResource(R.drawable.shape_button_selected);
-                    MainActivity.enable_move=false;
                     switch (graph_id){
                         case 0:
                             MA_INSTANCE.pic.setOnPixelTouchListener(LineListener);
@@ -40,7 +47,6 @@ public class Listeners {
                             break;
                     }
                 }else{
-                    MainActivity.enable_move =true;
                     v.setBackgroundResource(R.drawable.shape_sel);
                     MA_INSTANCE.pic.setOnPixelTouchListener(null);
                     MA_INSTANCE.pic.setOnPixelClickListener(null);
@@ -205,6 +211,54 @@ public class Listeners {
             super.onTouch(view, motionEvent, x, y);
         }
     };
+    public static View.OnClickListener selectListener=new View.OnClickListener() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void onClick(View view) {
+            if(!MA_INSTANCE.isEnable_select) {
+                MA_INSTANCE.enable_move=false;
+                view.setBackgroundResource(R.drawable.shape_button_selected);
+                MA_INSTANCE.pic.setOnPixelTouchListener(new PixelPicView.OnPixelTouchListener() {
+                    int[] pos;
+                    float[] pos_mea;
+                    @Override
+                    public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
+                        MA_INSTANCE.pic.cleanDrawnLines();
+                        if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                            if(dragWin!=null) dragWin.dismiss();
+                            pos=new int[]{x,y};
+                            pos_mea=new float[]{motionEvent.getRawX(),motionEvent.getRawY()};
+                        }else {
+                            MA_INSTANCE.pic.drawRectLine(pos[0], pos[1],x+1 ,y+1);
+                        }
+                        if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                            dragWin=showDragBottomWindow(R.layout.popupwin_select_edit,(int)pos_mea[0]-MA_INSTANCE.dip2px(45),(int)pos_mea[1]-MA_INSTANCE.dip2px(45));
+                        }
+                        super.onTouch(view, motionEvent, x, y);
+                    }
+                });
+            }else{
+                MA_INSTANCE.enable_move=true;
+                MA_INSTANCE.pic.setOnPixelTouchListener(null);
+                MA_INSTANCE.pic.cleanDrawnLines();
+                dragWin.dismiss();
+                view.setBackgroundResource(R.drawable.shape_button);
+            }
+            MA_INSTANCE.isEnable_select=!MA_INSTANCE.isEnable_select;
+        }
+    };
+    private static PopupWindow showDragBottomWindow(int layout_id,int x,int y){
+        LayoutInflater inflater = LayoutInflater.from(MA_INSTANCE);
+        PopupWindow popupWindow=new PopupWindow(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        View view=inflater.inflate(layout_id,null,true);
+        popupWindow.setContentView(view);
+        //popupWindow.setOutsideTouchable(false);
+        popupWindow.setFocusable(false);
+        popupWindow.setAnimationStyle(R.style.popupWindow);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.showAtLocation(MA_INSTANCE.getWindow().getDecorView(), Gravity.TOP|Gravity.LEFT,x,y);
+        return popupWindow;
+    }
     @TargetApi(Build.VERSION_CODES.O)
     public static void resetListenersForTools(){
         MA_INSTANCE.tools=new boolean[]{false,false,false,false,false};

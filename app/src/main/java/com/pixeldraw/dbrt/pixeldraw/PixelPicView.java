@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorSpace;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -36,7 +37,9 @@ public class PixelPicView extends View {
     private Canvas canvas=new Canvas();
     private int widthPixels=16,heightPixels=16,webWidth=18;
     private int[][] Plate=new int[][]{{0}};
-    private boolean isWeb=false;
+    private boolean isWeb=false,isLine=false;
+    private int[] draw_pos=new int[2]
+            ,stop_pos=new int[2];
     private Drawable background;
     private Bitmap bitmap;
     private FrameLayout.LayoutParams l;
@@ -107,6 +110,14 @@ public class PixelPicView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4f);
         canvas.drawRect(0,0,this.getMeasuredWidth(),this.getMeasuredHeight(),paint);
+        paint.setColor(Color.BLACK);
+        paint.setStrokeWidth(8f);
+        paint.setPathEffect(new DashPathEffect(new float[]{18,8},0));
+        float blockWidth=this.getMeasuredWidth() / Plate.length;
+        float blockHeight=this.getMeasuredHeight() / Plate[0].length;
+        if(isLine){
+            canvas.drawRect(blockWidth*draw_pos[0],blockHeight*draw_pos[1],blockWidth*stop_pos[0],blockHeight*stop_pos[1],paint);
+        }
         super.onDraw(canvas);
     }
     public void enableWeb(boolean b){
@@ -115,6 +126,16 @@ public class PixelPicView extends View {
             Log.d("c",""+b);
             updateCanvas();
         }
+    }
+    public void cleanDrawnLines(){
+        isLine=false;
+        updateCanvas();
+    }
+    public void drawRectLine(int x,int y,int stop_x,int stop_y){
+        isLine=true;
+        draw_pos=new int[]{x,y};
+        stop_pos=new int[]{stop_x,stop_y};
+        updateCanvas();
     }
     public void setWebWidth(int webWidth){
         this.webWidth=webWidth;

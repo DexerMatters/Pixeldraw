@@ -53,9 +53,9 @@ public class MainActivity extends Activity {
     public static String pathStr;
     public static int pen_color=0xFF000000;
     public static boolean enable_move=true;
-    public PopupWindow mainWin,editWin,fileWin,colorWin,colorSelectorWin,returnWin,graphWin;
+    public PopupWindow mainWin,bottomWin,editWin,fileWin,colorWin,colorSelectorWin,returnWin,graphWin;
     public PixelPicView pic;
-
+    public boolean isEnable_select=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,10 +185,14 @@ public class MainActivity extends Activity {
                 }
 
                 mainWin = showMainPopWindow(R.layout.popupwin);
+                bottomWin=showBottomWindow(R.layout.popupwin_bottom);
                 final View mainView = mainWin.getContentView();
+                final View bottomView=bottomWin.getContentView();
                 ImageButton button_A = mainView.findViewById(R.id.button2);
                 ImageButton button_B = mainView.findViewById(R.id.button3);
                 ImageButton button_settings=mainView.findViewById(R.id.button4);
+                ImageButton button_select=bottomView.findViewById(R.id.button_select);
+                button_select.setOnClickListener(Listeners.selectListener);
                 button_settings.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
@@ -527,6 +531,18 @@ public class MainActivity extends Activity {
         popupWindow.showAtLocation(getWindow().getDecorView(),Gravity.START|Gravity.BOTTOM,20,0);
         return popupWindow;
     }
+    private PopupWindow showBottomWindow(int layout_id){
+        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+        PopupWindow popupWindow=new PopupWindow(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        View view=inflater.inflate(layout_id,null,true);
+        popupWindow.setContentView(view);
+        //popupWindow.setOutsideTouchable(false);
+        popupWindow.setFocusable(false);
+        popupWindow.setAnimationStyle(R.style.popupWindow);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.showAtLocation(getWindow().getDecorView(),Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM,20,0);
+        return popupWindow;
+    }
     public void updateColorViewer(int color){
         colorviewer.setBackground(new LayerDrawable(new Drawable[]{getResources().getDrawable(R.drawable.trans_1),new ColorDrawable(color)}));
         color_picked=color;
@@ -720,7 +736,6 @@ public class MainActivity extends Activity {
                 if(!tools[tool_id]) {
                     Listeners.resetListenersForTools();
                     view.setBackgroundResource(R.drawable.shape_button_selected);
-                    enable_move=false;
                     switch (tool_id){
                         case 0:
                             pic.setOnPixelTouchListener(onPixelClickListener);
@@ -742,7 +757,6 @@ public class MainActivity extends Activity {
                     view.setBackgroundResource(R.drawable.shape_sel);
                     pic.setOnPixelTouchListener(null);
                     pic.setOnPixelClickListener(null);
-                    enable_move=true;
                 }
             }
         };
