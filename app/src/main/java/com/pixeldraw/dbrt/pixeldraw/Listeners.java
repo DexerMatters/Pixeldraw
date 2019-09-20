@@ -229,18 +229,19 @@ public class Listeners {
                     @Override
                     public void onTouch(View view, MotionEvent motionEvent, int x, int y) {
                         if(!hasSelected) {
-                            MA_INSTANCE.pic.cleanDrawnLines();
+                            MA_INSTANCE.pic.cleanSelectedPixels();
                             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                                 //if(dragWin!=null) dragWin.dismiss();
                                 pos = new int[]{x, y};
-                                pos_mea = new float[]{motionEvent.getRawX(), motionEvent.getRawY()};
                             } else {
-                                MA_INSTANCE.pic.drawRectLine(pos[0], pos[1], x + 1, y + 1);
+                                MA_INSTANCE.pic.selectRectPixel(pos[0], pos[1], x + 1, y + 1);
+                                MA_INSTANCE.pic.renderSelectedPixels();
                             }
                             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                                 stop_pos = new int[]{x, y};
                                 hasSelected=true;
-                                //dragWin=showDragBottomWindow(R.layout.popupwin_select_edit,(int)pos_mea[0]-MA_INSTANCE.dip2px(45),(int)pos_mea[1]-MA_INSTANCE.dip2px(45));
+                                pos_mea = new float[]{motionEvent.getRawX(), motionEvent.getRawY()};
+                                //dragWin=showDragBottomWindow(R.layout.popupwin_select_edit,(int)pos_mea[0],(int)pos_mea[1]+MA_INSTANCE.dip2px(45));
                             }
                         }else{
                             if(x>=pos[0]&&x<=stop_pos[0]&&y>=pos[1]&&y<=stop_pos[1]) {
@@ -253,8 +254,9 @@ public class Listeners {
                                     pos[1] = diff[1] + y;
                                     stop_pos[0] = diff_end[0] + x;
                                     stop_pos[1] = diff_end[1] + y;
-                                    MA_INSTANCE.pic.cleanDrawnLines();
-                                    MA_INSTANCE.pic.drawRectLine(pos[0], pos[1], stop_pos[0] + 1, stop_pos[1] + 1);
+                                    MA_INSTANCE.pic.cleanSelectedPixels();
+                                    MA_INSTANCE.pic.selectRectPixel(pos[0], pos[1], stop_pos[0]+1, stop_pos[1]+1);
+                                    MA_INSTANCE.pic.renderSelectedPixels();
                                 }
                             }
                         }
@@ -265,7 +267,7 @@ public class Listeners {
                 hasSelected=false;
                 MA_INSTANCE.enable_move=true;
                 MA_INSTANCE.pic.setOnPixelTouchListener(null);
-                MA_INSTANCE.pic.cleanDrawnLines();
+                MA_INSTANCE.pic.cleanSelectedPixels();
                 //dragWin.dismiss();
                 view.setBackgroundResource(R.drawable.shape_button);
             }

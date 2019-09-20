@@ -37,7 +37,8 @@ public class PixelPicView extends View {
     private Canvas canvas=new Canvas();
     private int widthPixels=16,heightPixels=16,webWidth=18;
     private int[][] Plate=new int[][]{{0}};
-    private boolean isWeb=false,isLine=false;
+    private boolean[][] selected=new boolean[16][16];
+    private boolean isWeb=false,isSelected=false;
     private int[] draw_pos=new int[2]
             ,stop_pos=new int[2];
     private Drawable background;
@@ -54,6 +55,7 @@ public class PixelPicView extends View {
     }
     protected void updateSize(){
         Plate=new int[widthPixels][heightPixels];
+        selected=new boolean[widthPixels][heightPixels];
         for (int i = 0; i < Plate.length; i++)
             for (int i1 = 0; i1 < Plate[i].length; i1++)
                 Plate[i][i1]= Color.TRANSPARENT;
@@ -90,14 +92,23 @@ public class PixelPicView extends View {
     protected void onDraw(Canvas canvas) {
         Paint mpaint2 = new Paint();
         mpaint2.setAntiAlias(false);
-        mpaint2.setColor(Color.WHITE);
+        mpaint2.setColor(Color.argb(0.5f,1f,1f,1f));
         for (int i = 0; i < Plate.length; i++)
             for (int i1 = 0; i1 < Plate[i].length; i1++) {
                 Paint mpaint = new Paint();
                 mpaint.setAntiAlias(false);
                 mpaint.setColor(Plate[i][i1]);
                 canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, this.getMeasuredHeight() / Plate[0].length * i1, this.getMeasuredWidth() / Plate.length * (i + 1), this.getMeasuredHeight() / Plate[0].length * (i1 + 1), mpaint);
-            }
+            if(isSelected){
+                Paint paint= new Paint();
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setColor(Color.argb(0.5f,1f,1f,1f));
+                paint.setStrokeWidth(8f);
+                paint.setPathEffect(new DashPathEffect(new float[]{18,8},0));
+                if(selected[i][i1]==true)
+                    canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, this.getMeasuredHeight() / Plate[0].length * i1, this.getMeasuredWidth() / Plate.length * (i + 1), this.getMeasuredHeight() / Plate[0].length * (i1 + 1), paint);
+                }
+        }
         if(isWeb) {
             for (int i = 1; i < Plate.length; i++)
                 canvas.drawRect(this.getMeasuredWidth() / Plate.length * i, 0f, this.getMeasuredWidth() / Plate.length * i + (getMeasuredWidth() / getWidthPixels() * 0.05f), this.getMeasuredHeight(), mpaint2);
@@ -106,18 +117,10 @@ public class PixelPicView extends View {
 
         }
         Paint paint=new Paint();
-        paint.setColor(Color.WHITE);
+        paint.setColor(Color.argb(0.5f,1f,1f,1f));
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4f);
         canvas.drawRect(0,0,this.getMeasuredWidth(),this.getMeasuredHeight(),paint);
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(8f);
-        paint.setPathEffect(new DashPathEffect(new float[]{18,8},0));
-        float blockWidth=this.getMeasuredWidth() / Plate.length;
-        float blockHeight=this.getMeasuredHeight() / Plate[0].length;
-        if(isLine){
-            canvas.drawRect(blockWidth*draw_pos[0],blockHeight*draw_pos[1],blockWidth*stop_pos[0],blockHeight*stop_pos[1],paint);
-        }
         super.onDraw(canvas);
     }
     public void enableWeb(boolean b){
@@ -126,16 +129,6 @@ public class PixelPicView extends View {
             Log.d("c",""+b);
             updateCanvas();
         }
-    }
-    public void cleanDrawnLines(){
-        isLine=false;
-        updateCanvas();
-    }
-    public void drawRectLine(int x,int y,int stop_x,int stop_y){
-        isLine=true;
-        draw_pos=new int[]{x,y};
-        stop_pos=new int[]{stop_x,stop_y};
-        updateCanvas();
     }
     public void setWebWidth(int webWidth){
         this.webWidth=webWidth;
@@ -176,6 +169,24 @@ public class PixelPicView extends View {
                         set(i,ii,bitmap.getPixel(i,ii));
         }
     }
+    public void selectPixel(int x,int y){
+        if(x>=0&&x<widthPixels&&y>=0&&y<heightPixels)
+            selected[x][y]=true;
+    }
+    public void renderSelectedPixels(){
+        isSelected=true;
+        updateCanvas();
+    }
+    public void cleanSelectedPixels(){
+        isSelected=false;
+        selected=new boolean[widthPixels][heightPixels];
+        updateCanvas();
+    }
+    public void selectRectPixel(int x,int y,int x_end,int y_end){
+        for(int i=x;i<x_end;i++)
+            for(int ii=y;ii<y_end;ii++)
+                selectPixel(i,ii);
+    }
     public int get(int x,int y){
         if(x<0||y<0||x>widthPixels||y>heightPixels)
             return 0;
@@ -197,11 +208,12 @@ public class PixelPicView extends View {
             Saved_Plates=new ArrayList<>();
         }
     }
-    public Bitmap getBitmapWithLines(){
+    public Bitmap createBitmapOfSelectedPixels(){
         Bitmap bitmap=Bitmap.createBitmap(widthPixels,heightPixels,Bitmap.Config.ARGB_8888);
-        for (int ii = draw_pos[0]; ii < stop_pos[0]-draw_pos[0]; ii++)
-            for (int ii1 = draw_pos[1]; ii1 < stop_pos[1]-draw_pos[1]; ii1++) {
-                bitmap.setPixel(ii, ii1, get(ii, ii1));
+        for (int ii = 0; ii < widthPixels; ii++)
+            for (int ii1 = 0; ii1 < heightPixels; ii1++) {
+                if(selected[ii][ii1])
+                    bitmap.setPixel(ii, ii1, get(ii, ii1));
             }
         return bitmap;
     }
