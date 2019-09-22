@@ -13,14 +13,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.*;
 public class Listeners {
-    static PopupWindow dragWin;
+    static PopupWindow dragWin,selectEditWin;
     static boolean hasSelected=false;
+    static int[] select_start,select_end;
     public static View.OnClickListener getGraphToolOnClickListener(View v,int graph_id){
         return new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.O)
@@ -231,17 +234,19 @@ public class Listeners {
                         if(!hasSelected) {
                             MA_INSTANCE.pic.cleanSelectedPixels();
                             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                                //if(dragWin!=null) dragWin.dismiss();
+                                if(selectEditWin!=null) selectEditWin.dismiss();
                                 pos = new int[]{x, y};
+                                select_start=pos.clone();
                             } else {
                                 MA_INSTANCE.pic.selectRectPixel(pos[0], pos[1], x + 1, y + 1);
                                 MA_INSTANCE.pic.renderSelectedPixels();
                             }
                             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                                 stop_pos = new int[]{x, y};
+                                select_end=stop_pos.clone();
                                 hasSelected=true;
                                 pos_mea = new float[]{motionEvent.getRawX(), motionEvent.getRawY()};
-                                //dragWin=showDragBottomWindow(R.layout.popupwin_select_edit,(int)pos_mea[0],(int)pos_mea[1]+MA_INSTANCE.dip2px(45));
+                                selectEditWin=showSecPopWindow(R.layout.popupwin_select_edit_tools);
                             }
                         }else{
                             if(x>=pos[0]&&x<=stop_pos[0]&&y>=pos[1]&&y<=stop_pos[1]) {
@@ -268,24 +273,12 @@ public class Listeners {
                 MA_INSTANCE.enable_move=true;
                 MA_INSTANCE.pic.setOnPixelTouchListener(null);
                 MA_INSTANCE.pic.cleanSelectedPixels();
-                //dragWin.dismiss();
+                selectEditWin.dismiss();
                 view.setBackgroundResource(R.drawable.shape_button);
             }
             MA_INSTANCE.isEnable_select=!MA_INSTANCE.isEnable_select;
         }
     };
-    private static PopupWindow showDragBottomWindow(int layout_id,int x,int y){
-        LayoutInflater inflater = LayoutInflater.from(MA_INSTANCE);
-        PopupWindow popupWindow=new PopupWindow(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-        View view=inflater.inflate(layout_id,null,true);
-        popupWindow.setContentView(view);
-        //popupWindow.setOutsideTouchable(false);
-        popupWindow.setFocusable(false);
-        popupWindow.setAnimationStyle(R.style.popupWindow);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        popupWindow.showAtLocation(MA_INSTANCE.getWindow().getDecorView(), Gravity.TOP|Gravity.LEFT,x,y);
-        return popupWindow;
-    }
     @TargetApi(Build.VERSION_CODES.O)
     public static void resetListenersForTools(){
         MA_INSTANCE.tools=new boolean[]{false,false,false,false,false};
@@ -307,5 +300,53 @@ public class Listeners {
         MA_INSTANCE.b_square_hol.setBackgroundResource(R.drawable.shape_sel);
         MA_INSTANCE.b_circle.setBackgroundResource(R.drawable.shape_sel);
         MA_INSTANCE.b_circle_hol.setBackgroundResource(R.drawable.shape_sel);
+    }
+    private static PopupWindow showSecPopWindow(int layout_id){
+        LayoutInflater inflater = LayoutInflater.from(MA_INSTANCE);
+        PopupWindow popupWindow=new PopupWindow(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+        View view=inflater.inflate(layout_id,null,true);
+        popupWindow.setContentView(view);
+        //popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(false);
+        popupWindow.setAnimationStyle(R.style.popupWindow);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        popupWindow.showAtLocation(MA_INSTANCE.getWindow().getDecorView(),Gravity.TOP|Gravity.START,MA_INSTANCE.dip2px(40)+20,20);
+        ImageButton slice_button=view.findViewById(R.id.button_slice);
+        ImageButton cut_button=view.findViewById(R.id.button_cut);
+        ImageButton copy_button=view.findViewById(R.id.button_copy);
+        slice_button.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                MA_INSTANCE.pic.setInitBitmap(MA_INSTANCE.pic.sliceAsBitmap(select_start[0],select_start[1],select_end[0]+1,select_end[1]+1));
+                MA_INSTANCE.pic.cleanSelectedPixels();
+                select_start=new int[]{0,0};
+                select_end=new int[]{MA_INSTANCE.pic.getWidthPixels()-1,MA_INSTANCE.pic.getHeightPixels()-1};
+                MA_INSTANCE.pic.selectRectPixel(0,0,MA_INSTANCE.pic.getWidthPixels(),MA_INSTANCE.pic.getHeightPixels());
+                MA_INSTANCE.pic.renderSelectedPixels();
+            }
+        });
+        cut_button.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                copied_pic=MA_INSTANCE.pic.sliceAsBitmap(select_start[0],select_start[1],select_end[0]+1,select_end[1]+1);
+                for(int i=select_start[0];i<select_end[0]+1;i++)
+                    for(int ii=select_start[1];ii<select_end[1]+1;ii++)
+                        MA_INSTANCE.pic.set(i,ii,Color.TRANSPARENT);
+                Toast.makeText(MAIN_CONTEXT,"长按即可粘贴",Toast.LENGTH_SHORT).show();
+                MA_INSTANCE.button_select.performClick();
+            }
+        });
+        copy_button.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View view) {
+                copied_pic=MA_INSTANCE.pic.sliceAsBitmap(select_start[0],select_start[1],select_end[0]+1,select_end[1]+1);
+                Toast.makeText(MAIN_CONTEXT,"长按即可粘贴",Toast.LENGTH_SHORT).show();
+                MA_INSTANCE.button_select.performClick();
+            }
+        });
+        return popupWindow;
     }
 }

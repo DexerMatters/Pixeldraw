@@ -56,6 +56,7 @@ public class MainActivity extends Activity {
     public PopupWindow mainWin,bottomWin,editWin,fileWin,colorWin,colorSelectorWin,returnWin,graphWin;
     public PixelPicView pic;
     public boolean isEnable_select=false;
+    public ImageButton button_select;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +192,7 @@ public class MainActivity extends Activity {
                 ImageButton button_A = mainView.findViewById(R.id.button2);
                 ImageButton button_B = mainView.findViewById(R.id.button3);
                 ImageButton button_settings=mainView.findViewById(R.id.button4);
-                ImageButton button_select=bottomView.findViewById(R.id.button_select);
+                button_select=bottomView.findViewById(R.id.button_select);
                 button_select.setOnClickListener(Listeners.selectListener);
                 button_settings.setOnClickListener(new View.OnClickListener(){
                     @Override

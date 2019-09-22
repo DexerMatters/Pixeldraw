@@ -33,6 +33,7 @@ public abstract class AppGlobalData {
     public static Bitmap color_plane=Bitmap.createBitmap(800,800,Bitmap.Config.ARGB_8888);
     public static Bitmap alpha_plane=Bitmap.createBitmap(870,300,Bitmap.Config.ARGB_8888);
     public static Bitmap brightness_plane=Bitmap.createBitmap(870,300,Bitmap.Config.ARGB_8888);
+    public static Bitmap copied_pic;
     private static File conf_file,bitmap_file,collection_file;
     private static Drawable black;
     private static Drawable white;

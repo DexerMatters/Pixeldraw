@@ -22,8 +22,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.*;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.MA_INSTANCE;
@@ -31,6 +33,7 @@ import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.Plates;
 
 import static android.content.ContentValues.TAG;
 import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.Saved_Plates;
+import static com.pixeldraw.dbrt.pixeldraw.AppGlobalData.copied_pic;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class PixelPicView extends View {
@@ -162,11 +165,14 @@ public class PixelPicView extends View {
         invalidate();
     }
     public void drawBitmapAt(int x,int y,Bitmap bitmap){
-        for(int i=x;i<x+bitmap.getWidth()-1;i++)
-            for(int ii=y;ii<y+bitmap.getHeight()-1;ii++){
+        for(int i=x;i<x+bitmap.getWidth();i++)
+            for(int ii=y;ii<y+bitmap.getHeight();ii++){
                 if(i>=0&&i<getWidthPixels())
                     if(ii>=0&&ii<getHeightPixels())
-                        set(i,ii,bitmap.getPixel(i,ii));
+                        if(bitmap.getPixel(i-x, ii-y)==Color.TRANSPARENT) {
+                            set(i, ii, bitmap.getPixel(i - x, ii - y));
+                        }
+
         }
     }
     public void selectPixel(int x,int y){
@@ -186,6 +192,9 @@ public class PixelPicView extends View {
         for(int i=x;i<x_end;i++)
             for(int ii=y;ii<y_end;ii++)
                 selectPixel(i,ii);
+    }
+    public boolean hasSelected(int x,int y){
+        return selected[x][y];
     }
     public int get(int x,int y){
         if(x<0||y<0||x>widthPixels||y>heightPixels)
@@ -208,12 +217,11 @@ public class PixelPicView extends View {
             Saved_Plates=new ArrayList<>();
         }
     }
-    public Bitmap createBitmapOfSelectedPixels(){
-        Bitmap bitmap=Bitmap.createBitmap(widthPixels,heightPixels,Bitmap.Config.ARGB_8888);
-        for (int ii = 0; ii < widthPixels; ii++)
-            for (int ii1 = 0; ii1 < heightPixels; ii1++) {
-                if(selected[ii][ii1])
-                    bitmap.setPixel(ii, ii1, get(ii, ii1));
+    public Bitmap sliceAsBitmap(int x,int y,int end_x,int end_y){
+        Bitmap bitmap=Bitmap.createBitmap(Math.abs(x-end_x),Math.abs(y-end_y),Bitmap.Config.ARGB_8888);
+        for (int ii = 0; ii < Math.abs(x-end_x); ii++)
+            for (int ii1 = 0; ii1 < Math.abs(y-end_y); ii1++) {
+                bitmap.setPixel(ii, ii1, get(x+ii, y+ii1));
             }
         return bitmap;
     }
@@ -283,6 +291,7 @@ public class PixelPicView extends View {
     public void setOnPixelTouchListener(@Nullable final OnPixelTouchListener pixelTouchListener) {
         if (pixelTouchListener != null) {
             setOnTouchListener(new OnTouchListener() {
+                long down;
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     PixelPicView instance = PixelPicView.this;
@@ -293,12 +302,46 @@ public class PixelPicView extends View {
                                     && motionEvent.getY() > i1 * (getMeasuredHeight()/getHeightPixels())
                                     && motionEvent.getY() < (i1 + 1) * (getMeasuredHeight()/getHeightPixels())) {
                                 pixelTouchListener.onTouch(instance, motionEvent, i, i1);
+                                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN)
+                                    down=new Date().getTime();
+                                if(motionEvent.getAction()==MotionEvent.ACTION_UP)
+                                    if(new Date().getTime()-down>=400&&copied_pic!=null){
+                                        Toast.makeText(getContext(), "已粘贴", Toast.LENGTH_SHORT).show();
+                                        drawBitmapAt(i,i1,copied_pic);
+                                    }
                             }
                         }
                     return true;
                 }
             });
-        }else setOnTouchListener(null);
+        }else setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                setOnTouchListener(new OnTouchListener() {
+                    long down;
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        for (int i = 0; i < Plate.length; i++)
+                            for (int i1 = 0; i1 < Plate[i].length; i1++) {
+                                if (motionEvent.getX() > i * (getMeasuredWidth()/getWidthPixels())
+                                        && motionEvent.getX() < (i + 1) * (getMeasuredWidth()/getWidthPixels())
+                                        && motionEvent.getY() > i1 * (getMeasuredHeight()/getHeightPixels())
+                                        && motionEvent.getY() < (i1 + 1) * (getMeasuredHeight()/getHeightPixels())) {
+                                    if(motionEvent.getAction()==MotionEvent.ACTION_DOWN)
+                                        down=new Date().getTime();
+                                    if(motionEvent.getAction()==MotionEvent.ACTION_UP)
+                                        if(new Date().getTime()-down>=400&&copied_pic!=null){
+                                            Toast.makeText(getContext(), "已粘贴", Toast.LENGTH_SHORT).show();
+                                            drawBitmapAt(i,i1,copied_pic);
+                                        }
+                                }
+                            }
+                        return true;
+                    }
+                });
+                return true;
+            }
+        });
     }
     private static float dip2px(float dp){
         return MA_INSTANCE.dip2px(dp);

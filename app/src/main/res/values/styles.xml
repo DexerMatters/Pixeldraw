@@ -12,6 +12,10 @@
         <item name="android:windowEnterAnimation">@anim/pop_enter_sec</item>
         <item name="android:windowExitAnimation">@anim/pop_exit_sec</item>
     </style>
+    <style name="popupWindow_sec_" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_enter_sec_</item>
+        <item name="android:windowExitAnimation">@anim/pop_exit_sec_</item>
+    </style>
     <style name="seekBar">
         <item name="android:paddingLeft">7dp</item>
         <item name="android:paddingBottom">17dp</item>
